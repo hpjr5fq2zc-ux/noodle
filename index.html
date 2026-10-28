@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Noodle</title>
 <meta name="theme-color" content="#FFFFFF">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -97,8 +97,8 @@ input[type=range]:focus-visible{outline:3px solid #1556C2;outline-offset:2px;bor
 </style>
 
 <style>
-html,body{margin:0;height:100%;background:#FFFFFF;overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
-#stage{position:absolute;top:0;left:0;width:390px;height:844px;transform-origin:0 0}
+html,body{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;margin:0;height:100%;background:#FFFFFF;overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+#stage{touch-action:manipulation;position:absolute;top:0;left:0;width:390px;height:844px;transform-origin:0 0}
 button{cursor:pointer}
 </style>
 </head>
@@ -539,6 +539,7 @@ button{cursor:pointer}
 <script src="preact.min.js"></script>
 <script src="runtime.js"></script>
 <script src="app.js"></script>
+<script>document.addEventListener('gesturestart',function(e){e.preventDefault();});document.addEventListener('dblclick',function(e){e.preventDefault();},{passive:false});</script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
 </body>
 </html>
