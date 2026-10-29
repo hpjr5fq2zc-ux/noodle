@@ -503,6 +503,22 @@ class Component extends DCLogic {
     const br = pr.bar || [-20, -10, -20]; out.rx1 = br[0]; out.rx2 = br[1]; out.ry = br[2]; out.ro = pr.bar ? 1 : 0;
     return out;
   }
+  face(expr, z) {
+    const m = {
+      smile: '<path d="M13 25 Q20 32 27 25" fill="none" stroke="#161616" stroke-width="2.6" stroke-linecap="round"/>',
+      smirk: '<path d="M16 28 Q22 29 27 24" fill="none" stroke="#161616" stroke-width="2.6" stroke-linecap="round"/>',
+      grin: '<path d="M10 22 H30 A10 10 0 0 1 10 22 Z" fill="#FFFFFF" stroke="#161616" stroke-width="2.4" stroke-linejoin="round"/><path d="M15 22 V30 M20 22 V32 M25 22 V30" stroke="#161616" stroke-width="1.8"/>',
+      oof: '<path d="M12 28 l3.2 -3 l3.2 3 l3.2 -3 l3.2 3 l3.2 -3" fill="none" stroke="#161616" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'
+    };
+    const look = { left: -3, right: 3 };
+    const ex = expr.split('-'), mouth = ex[0], dx = look[ex[1]] || 0, up = expr === 'grin' ? -2 : 0;
+    const eyes = mouth === 'grin'
+      ? '<path d="M10 15 q4 -5 8 0 M22 15 q4 -5 8 0" fill="none" stroke="#161616" stroke-width="2.6" stroke-linecap="round"/>'
+      : '<circle cx="' + (14 + dx) + '" cy="' + (16 + up) + '" r="3.4" fill="#161616"/><circle cx="' + (26 + dx) + '" cy="' + (16 + up) + '" r="3.4" fill="#161616"/>' + (mouth === 'smirk' ? '<path d="M' + (10 + dx) + ' 10 l7 1.5 M' + (22 + dx) + ' 11.5 l7 -1.5" stroke="#161616" stroke-width="2.2" stroke-linecap="round"/>' : '');
+    const blush = '<ellipse cx="9" cy="' + (mouth === 'grin' ? 20 : 23) + '" rx="3.6" ry="2.4" fill="#E5282E"/><ellipse cx="31" cy="' + (mouth === 'grin' ? 20 : 23) + '" rx="3.6" ry="2.4" fill="#E5282E"/>';
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18.4" fill="#FFC20E" stroke="#161616" stroke-width="2.4"/>' + blush + eyes + (m[mouth] || m.smile) + '</svg>';
+    return 'display:block;flex:none;width:' + z + 'px;height:' + z + 'px;background:url("data:image/svg+xml,' + encodeURIComponent(svg).replace(/'/g, '%27') + '") center/contain no-repeat';
+  }
   shp(kind, color, z) {
     const base = 'display:block;flex:none;width:' + z + 'px;height:' + z + 'px;';
     if (kind === 'circle') return base + 'border-radius:50%;background:' + color;
@@ -888,7 +904,10 @@ class Component extends DCLogic {
       showUpNext: !s.askFb && !s.fbMsg,
       askFb: s.askFb, hasFbMsg: !!s.fbMsg && !s.askFb, fbMsg: s.fbMsg,
       lastMove: cur.n,
-      fbEasy: () => this.feedback('easy'), fbRight: () => this.feedback('right'), fbHard: () => this.feedback('hard'),
+      fbEasy: () => { this.setState({ fbKind: 'easy' }); this.feedback('easy'); }, fbRight: () => { this.setState({ fbKind: 'right' }); this.feedback('right'); }, fbHard: () => { this.setState({ fbKind: 'hard' }); this.feedback('hard'); },
+      faceEasy: this.face('smirk', 20), faceRight: this.face('smile', 20), faceHard: this.face('oof', 20),
+      fbFace: this.face(s.fbKind === 'easy' ? 'smirk' : s.fbKind === 'hard' ? 'oof' : 'grin', 26),
+      youFace: this.face(s.screen === 'you' ? 'smile' : 'smile-left', 24),
       navHome: () => this.swipeTo('checkin', { pathOpen: null }),
       navPaths: () => this.swipeTo('paths', { pathOpen: null, query: '' }),
       navExplore: () => this.swipeTo('explore', { query: '' }),
