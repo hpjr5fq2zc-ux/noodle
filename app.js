@@ -5,14 +5,17 @@ class Component extends DCLogic {
     this.state = { hint: '', seen: {}, levels: { push: 0, pull: 0, legs: 0, core: 0, balance: 0, dance: 0, strikes: 0, stretch: 0, mobility: 0, freezes: 0, splits: 0, crawls: 0, flow: 0 }, stones: {}, fb: 0, pathOpen: null, celebrate: false, moveOpen: null, moveFrom: 'session', query: '', tried: {}, history: {}, log: {}, safe: { done: false, areas: {}, care: null }, guideDone: false, guideStep: 0, sessions: 0, profile: { done: false, likes: {}, active: null }, peek: null, lvAtStart: 0, doneNote: '', doneFace: 'grin', rest: 15, seenTricks: {}, trickN: 0, trickName: '', selDay: null, bodySide: 'f', region: null, settingsOpen: false, resetArm: false, setMsg: '', collectHint: '', focus: null, triedAtStart: {}, calm: false, sound: true, chatter: true, resting: false, askFb: false, fbMsg: '', phrase: 0, visited: false, pets: 0, homePets: 0, petting: false, screen: 'checkin', time: 20, energy: 50, mood: 'Surprise', seed: 0, swaps: {}, idx: 0, remaining: 0, paused: false, expanding: false, expandColor: '#1556C2' };
   }
   componentDidMount() {
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch (e) {}
     const unlock = () => { this.ensureAudio(); };
     ['pointerdown', 'touchend', 'keydown'].forEach((ev) => document.addEventListener(ev, unlock, { passive: true }));
     this.timer = setInterval(() => this.tick(), 1000);
-    try { const raw = localStorage.getItem('noodle-v1'); if (raw) { const o = JSON.parse(raw); const keep = {}; ['levels', 'stones', 'history', 'log', 'rest', 'seenTricks', 'safe', 'guideDone', 'sessions', 'profile', 'tried', 'seen', 'fb', 'calm', 'sound', 'chatter', 'time', 'energy', 'mood'].forEach((k) => { if (o[k] !== undefined) keep[k] = o[k]; }); if (keep.history) keep.history = this.cleanHistory(keep.history); if (keep.levels) keep.levels = Object.assign({}, this.state.levels, keep.levels); this.setState(keep); } } catch (e) {}
+    try { this.demo = /[?&]demo=full/.test(location.search); } catch (e) {}
+    if (this.demo) { this.setState(this.demoState()); return; }
+    try { const raw = localStorage.getItem(this.demo ? 'noodle-demo-full' : 'noodle-v1'); if (raw) { const o = JSON.parse(raw); const keep = {}; ['levels', 'stones', 'history', 'log', 'rest', 'seenTricks', 'safe', 'chBonus', 'guideDone', 'sessions', 'profile', 'tried', 'seen', 'fb', 'calm', 'sound', 'chatter', 'time', 'energy', 'mood'].forEach((k) => { if (o[k] !== undefined) keep[k] = o[k]; }); if (keep.history) keep.history = this.cleanHistory(keep.history); if (keep.levels) keep.levels = Object.assign({}, this.state.levels, keep.levels); this.setState(keep); } } catch (e) {}
   }
   componentDidUpdate() {
     const s = this.state;
-    try { const o = {}; ['levels', 'stones', 'history', 'log', 'rest', 'seenTricks', 'safe', 'guideDone', 'sessions', 'profile', 'tried', 'seen', 'fb', 'calm', 'sound', 'chatter', 'time', 'energy', 'mood'].forEach((k) => { o[k] = s[k]; }); const str = JSON.stringify(o); if (str !== this._saved) { localStorage.setItem('noodle-v1', str); this._saved = str; } } catch (e) {}
+    try { const o = {}; ['levels', 'stones', 'history', 'log', 'rest', 'seenTricks', 'safe', 'chBonus', 'guideDone', 'sessions', 'profile', 'tried', 'seen', 'fb', 'calm', 'sound', 'chatter', 'time', 'energy', 'mood'].forEach((k) => { o[k] = s[k]; }); const str = JSON.stringify(o); if (str !== this._saved) { localStorage.setItem(this.demo ? 'noodle-demo-full' : 'noodle-v1', str); this._saved = str; } } catch (e) {}
     const want = s.screen === 'player' && !s.paused;
     try {
       if (want && !this.lock && !this.locking && navigator.wakeLock) { this.locking = true; navigator.wakeLock.request('screen').then((l) => { this.lock = l; this.locking = false; l.addEventListener('release', () => { this.lock = null; }); }).catch(() => { this.locking = false; }); }
@@ -131,25 +134,33 @@ class Component extends DCLogic {
   }
   weekKey(dt) { const d = new Date(dt || new Date()); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d; }
   challenge() {
-    const s = this.state, F = this.fams(), start = this.weekKey();
+    const s = this.state, F = this.fams(), MI = this.moveInfo(), start = this.weekKey(), wid = start.getTime();
     const CH = [
-      { id: 'new', t: 'Try 3 moves you have never done', goal: 3, mood: 'Surprise', count: (e) => e.nw.length },
-      { id: 'dance', t: 'Sneak in 4 dance moves', goal: 4, mood: 'Dance', count: (e) => (e.f.dance || 0) + (e.f.freezes || 0) + (e.f.flow || 0) },
-      { id: 'stretch', t: 'Give stretching some love: 5 stretches', goal: 5, mood: 'Stretch', count: (e) => (e.f.stretch || 0) + (e.f.splits || 0) },
-      { id: 'mix', t: 'Move in 5 different families', goal: 5, mood: 'Surprise', distinct: true },
-      { id: 'kick', t: 'Throw 4 strike moves', goal: 4, mood: 'Strikes', count: (e) => (e.f.strikes || 0) + (e.f.flow || 0) },
-      { id: 'days', t: 'Move on 2 different days', goal: 2, mood: null, days: true }
+      { id: 'new', t: '3 moves you have never done', goal: 3, mood: 'Surprise', kind: 'new' },
+      { id: 'dance', t: '4 dance moves', goal: 4, mood: 'Dance', fams: ['dance', 'freezes', 'flow'] },
+      { id: 'stretch', t: '5 stretches', goal: 5, mood: 'Stretch', fams: ['stretch', 'splits'] },
+      { id: 'mix', t: '5 different families', goal: 5, mood: 'Surprise', kind: 'fams' },
+      { id: 'kick', t: '4 kicks or punches', goal: 4, mood: 'Strikes', fams: ['strikes', 'flow'] },
+      { id: 'days', t: 'Move on 2 different days', goal: 2, mood: null, kind: 'days' },
+      { id: 'bal', t: '3 balance moves', goal: 3, mood: 'Surprise', fams: ['balance', 'freezes'] },
+      { id: 'core', t: '4 core moves', goal: 4, mood: 'Strength', fams: ['core', 'crawls'] },
+      { id: 'legs', t: '5 leg moves', goal: 5, mood: 'Strength', fams: ['legs'] },
+      { id: 'new5', t: '5 moves you have never done', goal: 5, mood: 'Surprise', kind: 'new' }
     ];
-    const wk = Math.floor(start.getTime() / 6048e5);
-    const c = CH[((wk % CH.length) + CH.length) % CH.length];
-    let n = 0; const fams = {};
+    const wk = Math.floor(wid / 6048e5), bonus = s.chBonus && s.chBonus.w === wid ? s.chBonus.n : 0;
+    const c = CH[(((wk % CH.length) + CH.length) % CH.length + bonus) % CH.length];
+    const found = [], add = (x) => { if (found.indexOf(x) < 0) found.push(x); };
+    const DAY = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     for (let i = 0; i < 7; i++) {
       const d = new Date(start); d.setDate(d.getDate() + i);
       const e = this.dayLog(this.dayKey(d)); if (!e) continue;
-      if (c.days) n++; else if (c.distinct) Object.keys(e.f).forEach((k) => { if (F[k]) fams[k] = 1; }); else n += c.count(e);
+      if (c.kind === 'days') add(DAY[i]);
+      else if (c.kind === 'fams') Object.keys(e.f).forEach((k) => { if (F[k]) add(F[k].name); });
+      else if (c.kind === 'new') (e.nw || []).forEach(add);
+      else (e.mv || []).forEach((n) => { if (MI[n] && c.fams.indexOf(MI[n].fam) >= 0) add(n); });
     }
-    if (c.distinct) n = Object.keys(fams).length;
-    return Object.assign({}, c, { n: Math.min(n, c.goal), done: n >= c.goal });
+    const n = found.length;
+    return Object.assign({}, c, { n: Math.min(n, c.goal), done: n >= c.goal, found: found.slice(0, c.goal), moves: !c.kind || c.kind === 'new', bonus, more: bonus < CH.length - 1, wid });
   }
   shareCard() {
     const s = this.state, flat = this.flat(), art = this.noodleSvg(s.sessions);
@@ -197,6 +208,8 @@ class Component extends DCLogic {
       const first = this.likesMap().find((r) => pr.likes[r[0]]);
       if (first) upd.mood = first[3];
       if (pr.likes.cardio) upd.energy = 75; else if (pr.likes.chill) upd.energy = 25;
+      upd.time = [10, 15, 20, 25][pr.active || 0];
+      if (!pr.active) upd.energy = Math.min(upd.energy || 50, 35);
     }
     this._pk = null; this.setState(upd);
   }
@@ -338,6 +351,22 @@ class Component extends DCLogic {
     return true;
   }
   lvSum() { const L = this.state.levels; return Math.max(0, Object.keys(L).reduce((x, k) => x + (L[k] || 0), 0) - ((this.state.profile && this.state.profile.base) || 0)); }
+  demoState() {
+    const F = this.fams(), BK = this.bank(), levels = {}, stones = {}, seen = {}, tried = {}, seenTricks = {}, log = {}, history = {};
+    Object.keys(F).forEach((k) => { levels[k] = 4; stones[k] = Math.max(0, F[k].ladder.length - 1); seen[k] = true; });
+    BK.forEach((m) => { tried[m.n] = 1; });
+    this.tricks().forEach((t) => { seenTricks[t[0]] = true; });
+    const fams = ['push', 'legs', 'dance', 'stretch', 'strikes', 'core', 'balance', 'mobility', 'pull'];
+    const today = new Date();
+    for (let i = 0; i < 80; i++) {
+      const d = new Date(today); d.setDate(d.getDate() - i);
+      if (i > 6 && (i * 7) % 10 < 3) continue;
+      const fa = fams[i % fams.length], fb = fams[(i + 3) % fams.length], f = {}; f[fa] = 4; f[fb] = 2;
+      const mv = BK.filter((m) => m.fam === fa || m.fam === fb).slice(0, 6).map((m) => m.n);
+      const k = this.dayKey(d); log[k] = { m: 20, f, mv, nw: i < 7 ? mv.slice(0, 2) : [] }; history[k] = fa;
+    }
+    return { levels, stones, seen, tried, seenTricks, log, history, sessions: 120, fb: 60, safe: { done: true, areas: {}, care: false }, guideDone: true, profile: { done: true, likes: {}, active: 2, base: 0 }, chBonus: null };
+  }
   tricks() {
     return [['Sit', 0, 'trSit', 0.9], ['Wag', 1, 'trWag', 0.8], ['Hop', 2, 'trHop', 1.0], ['Spin', 4, 'trSpin', 0.9], ['Roll over', 6, 'trRoll', 1.1], ['Bow', 9, 'trBow', 1.2], ['Dance', 12, 'trDance', 1.4], ['Handstand', 16, 'trHand', 1.8, '82% 96%'], ['Moonwalk', 20, 'trMoon', 1.6], ['Backflip', 26, 'trFlip', 1.2, '50% 55%'], ['Play dead', 30, 'trDead', 1.8, '50% 60%'], ['Zoomies', 34, 'trZoom', 1.4], ['Sneeze', 38, 'trSneeze', 0.9]];
   }
@@ -389,12 +418,32 @@ class Component extends DCLogic {
   }
   backup() {
     const s = this.state, o = { app: 'noodle', v: 1, saved: new Date().toISOString() };
-    ['levels', 'stones', 'history', 'log', 'rest', 'seenTricks', 'safe', 'guideDone', 'sessions', 'profile', 'tried', 'seen', 'fb', 'calm', 'sound', 'chatter', 'time', 'energy', 'mood'].forEach((k) => { o[k] = s[k]; });
+    ['levels', 'stones', 'history', 'log', 'rest', 'seenTricks', 'safe', 'chBonus', 'guideDone', 'sessions', 'profile', 'tried', 'seen', 'fb', 'calm', 'sound', 'chatter', 'time', 'energy', 'mood'].forEach((k) => { o[k] = s[k]; });
     const name = 'noodle-backup-' + this.dayKey() + '.json';
     const blob = new Blob([JSON.stringify(o)], { type: 'application/json' });
     try { const file = new File([blob], name, { type: 'application/json' }); if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file] }).then(() => this.setState({ setMsg: 'Backup saved.' })).catch(() => {}); return; } } catch (e) {}
     const u = URL.createObjectURL(blob), l = document.createElement('a'); l.href = u; l.download = name; document.body.appendChild(l); l.click(); l.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
     this.setState({ setMsg: 'Backup saved to your downloads.' });
+  }
+  remindCal(slot) {
+    const T = { morning: [8, 0, 'Morning wake-up'], midday: [12, 30, 'Midday reset'], evening: [21, 0, 'Evening wind-down'] }[slot];
+    const d = new Date(); d.setDate(d.getDate() + 1);
+    const p = (n) => String(n).padStart(2, '0'), day = d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate());
+    const st = day + 'T' + p(T[0]) + p(T[1]) + '00', en = day + 'T' + p(T[0]) + p(T[1] + 10 >= 60 ? T[1] - 50 : T[1] + 10) + '00';
+    const en2 = T[1] + 10 >= 60 ? day + 'T' + p(T[0] + 1) + p(T[1] - 50) + '00' : en;
+    const url = location.href.split('#')[0].split('?')[0];
+    const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Noodle//EN', 'BEGIN:VEVENT', 'UID:noodle-' + slot + '-' + Date.now() + '@noodle', 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z',
+      'DTSTART:' + st, 'DTEND:' + en2, 'RRULE:FREQ=DAILY', 'SUMMARY:Noodle: ' + T[2], 'DESCRIPTION:Even 2 minutes counts. ' + url, 'URL:' + url,
+      'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:Time to noodle!', 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    const l = document.createElement('a'); l.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics); l.download = 'noodle-' + slot + '.ics';
+    document.body.appendChild(l); l.click(); l.remove();
+    this.setState({ setMsg: 'Open the file to add it to your calendar. Delete the event anytime to stop.' });
+  }
+  shareFriend() {
+    const url = location.href.split('#')[0].split('?')[0].replace(/index\.html$/, '');
+    const text = 'Come wiggle with me and Noodle';
+    try { if (navigator.share) { navigator.share({ title: 'Noodle', text, url }).catch(() => {}); return; } } catch (e) {}
+    try { navigator.clipboard.writeText(text + ': ' + url); this.setState({ shareMsg: 'Link copied!' }); } catch (e) {}
   }
   restore() {
     const i = document.createElement('input'); i.type = 'file'; i.accept = '.json,application/json';
@@ -404,7 +453,7 @@ class Component extends DCLogic {
       r.onload = () => {
         try {
           const o = JSON.parse(r.result); if (!o || o.app !== 'noodle') throw new Error('x');
-          const keep = {}; ['levels', 'stones', 'history', 'log', 'rest', 'seenTricks', 'safe', 'guideDone', 'sessions', 'profile', 'tried', 'seen', 'fb', 'calm', 'sound', 'chatter', 'time', 'energy', 'mood'].forEach((k) => { if (o[k] !== undefined) keep[k] = o[k]; });
+          const keep = {}; ['levels', 'stones', 'history', 'log', 'rest', 'seenTricks', 'safe', 'chBonus', 'guideDone', 'sessions', 'profile', 'tried', 'seen', 'fb', 'calm', 'sound', 'chatter', 'time', 'energy', 'mood'].forEach((k) => { if (o[k] !== undefined) keep[k] = o[k]; });
           if (keep.levels) keep.levels = Object.assign({}, this.state.levels, keep.levels);
           keep.setMsg = 'Welcome back! Your progress is restored.'; this._pk = null; this.setState(keep);
         } catch (e) { this.setState({ setMsg: "That file isn't a Noodle backup." }); }
@@ -960,6 +1009,53 @@ class Component extends DCLogic {
     const br = pr.bar || [-20, -10, -20]; out.rx1 = br[0]; out.rx2 = br[1]; out.ry = br[2]; out.ro = pr.bar ? 1 : 0;
     return out;
   }
+  dogHead(expr, w) {
+    const eyes = {
+      calm: '<circle cx="41" cy="27" r="3.5" fill="#161616"/><circle cx="59" cy="27" r="3.5" fill="#161616"/>',
+      happy: '<path d="M36 28 q5 -6 10 0 M54 28 q5 -6 10 0" fill="none" stroke="#161616" stroke-width="3" stroke-linecap="round"/>',
+      wow: '<circle cx="41" cy="26" r="5.5" fill="#FFFFFF" stroke="#161616" stroke-width="2"/><circle cx="59" cy="26" r="5.5" fill="#FFFFFF" stroke="#161616" stroke-width="2"/><circle cx="42" cy="27" r="2.6" fill="#161616"/><circle cx="60" cy="27" r="2.6" fill="#161616"/>',
+      wink: '<circle cx="41" cy="27" r="3.5" fill="#161616"/><path d="M54 27 h10" stroke="#161616" stroke-width="3" stroke-linecap="round"/>',
+      dizzy: '<path d="M37 23 l8 8 M45 23 l-8 8 M55 23 l8 8 M63 23 l-8 8" stroke="#161616" stroke-width="2.6" stroke-linecap="round"/>',
+      sleepy: '<path d="M36 28 q5 4 10 0 M54 28 q5 4 10 0" fill="none" stroke="#161616" stroke-width="3" stroke-linecap="round"/>'
+    }[expr] || '';
+    const tongue = expr === 'happy' || expr === 'wink' ? '<path d="M46 50 h8 v5 a4 4 0 0 1 -8 0 z" fill="#E5282E" stroke="#161616" stroke-width="1.5"/>' : expr === 'wow' ? '<ellipse cx="50" cy="51" rx="3" ry="3.5" fill="#161616"/>' : '';
+    const earUp = expr === 'wow' || expr === 'happy';
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70">' + (earUp ? '<ellipse cx="25" cy="28" rx="8" ry="15" fill="#161616" transform="rotate(-25 25 28)"/><ellipse cx="75" cy="28" rx="8" ry="15" fill="#161616" transform="rotate(25 75 28)"/>' : '<ellipse cx="27" cy="36" rx="8" ry="16" fill="#161616"/><ellipse cx="73" cy="36" rx="8" ry="16" fill="#161616"/>') + '<circle cx="50" cy="32" r="24" fill="#E5282E"/><ellipse cx="50" cy="44" rx="12" ry="9" fill="#FFC20E"/><circle cx="50" cy="39" r="4.5" fill="#161616"/>' + eyes + tongue + '</svg>';
+    return 'display:block;flex:none;width:' + w + 'px;height:' + Math.round(w * 0.7) + 'px;background:url("data:image/svg+xml,' + encodeURIComponent(svg).replace(/'/g, '%27') + '") center/contain no-repeat';
+  }
+  park() {
+    const s = this.state, h = new Date().getHours(), night = h >= 20 || h < 6, dusk = !night && h >= 17, ses = s.sessions || 0;
+    const start = this.weekKey(); let days = 0;
+    for (let i = 0; i < 7; i++) { const d = new Date(start); d.setDate(d.getDate() + i); if (this.dayLog(this.dayKey(d))) days++; }
+    const C = night ? { sky: '#1B2A55', hill: '#26496B', ground: '#0A4D2A', tree: '#0A5E57' } : dusk ? { sky: '#F8D9B8', hill: '#8CC7A6', ground: '#0B7A3E', tree: '#0E8178' } : { sky: '#DCEBFA', hill: '#9ED3B3', ground: '#0B7A3E', tree: '#0E8178' };
+    let g = '';
+    if (night) { g += '<circle cx="340" cy="40" r="16" fill="#F4F4F4"/><circle cx="347" cy="35" r="14" fill="' + C.sky + '"/>'; [[40, 30], [90, 55], [150, 22], [210, 48], [260, 18], [300, 70], [375, 60], [120, 85]].forEach((p) => { g += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="1.8" fill="#FFFFFF"/>'; }); }
+    else if (dusk) g += '<circle cx="300" cy="112" r="20" fill="#F26A0F"/>';
+    else g += '<circle cx="340" cy="42" r="20" fill="#FFC20E"/>';
+    g += '<ellipse cx="115" cy="165" rx="110" ry="58" fill="' + C.hill + '"/><ellipse cx="318" cy="165" rx="80" ry="44" fill="' + C.hill + '"/><rect x="-400" y="160" width="1200" height="30" fill="' + C.ground + '"/>';
+    if (ses >= 25) g += '<path d="M210 22 l11 13 l-11 13 l-11 -13 z" fill="#E5282E"/><path d="M210 48 q6 9 -2 16 q-6 7 2 14" fill="none" stroke="#161616" stroke-width="1.5"/><path d="M221 35 L345 158" stroke="#161616" stroke-width="1" opacity=".45"/>';
+    if (ses >= 10) g += '<ellipse cx="290" cy="179" rx="38" ry="7" fill="#1556C2"/><circle cx="293" cy="174" r="5.5" fill="#FFC20E"/><circle cx="298" cy="168" r="3.6" fill="#FFC20E"/><path d="M301 168 l4 1 l-4 2 z" fill="#F26A0F"/>';
+    if (ses >= 50) g += '<rect x="112" y="163" width="44" height="10" fill="#E5282E"/><rect x="120" y="163" width="6" height="10" fill="#FFFFFF"/><rect x="134" y="163" width="6" height="10" fill="#FFFFFF"/><rect x="148" y="163" width="6" height="10" fill="#FFFFFF"/>';
+    if (ses >= 5) g += '<rect x="318" y="134" width="50" height="5" fill="#C08A00"/><rect x="318" y="147" width="50" height="5" fill="#C08A00"/><rect x="322" y="139" width="3" height="21" fill="#161616"/><rect x="361" y="139" width="3" height="21" fill="#161616"/>';
+    const FC = ['#E5282E', '#FFC20E', '#F6A5A9', '#1556C2', '#FFFFFF', '#F26A0F', '#6B3FA0'];
+    for (let i = 0; i < days; i++) { const x = 116 + i * 20, y = 177 + (i % 2) * 5; g += '<path d="M' + x + ' ' + (y + 9) + ' V' + y + '" stroke="#161616" stroke-width="1.6"/><circle cx="' + x + '" cy="' + y + '" r="4.5" fill="' + FC[i] + '"/><circle cx="' + x + '" cy="' + y + '" r="1.6" fill="#161616"/>'; }
+    const uri = (svg) => 'url("data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" ' + svg + '</svg>').replace(/'/g, '%27') + '")';
+    const tree = 'viewBox="0 0 84 112"><rect x="37" y="58" width="10" height="54" fill="#161616"/><circle cx="42" cy="42" r="38" fill="' + C.tree + '"/>' + (night ? '' : '<circle cx="28" cy="34" r="4" fill="#E5282E"/><circle cx="55" cy="26" r="4" fill="#E5282E"/><circle cx="50" cy="55" r="4" fill="#E5282E"/>');
+    const U = [[5, 'a bench'], [10, 'a pond (with a duck)'], [25, 'a kite'], [50, 'a picnic']], nx = U.find((u) => ses < u[0]);
+    return { bg: 'position:relative;height:190px;overflow:hidden;border-bottom:3px solid #161616;background:' + uri('viewBox="0 0 400 190">' + g) + ' center bottom/auto 100% no-repeat, linear-gradient(to top, ' + C.ground + ' 0 30px, ' + C.sky + ' 30px)', tree: 'display:block;width:84px;height:112px;background:' + uri(tree) + ' center/contain no-repeat', days, night,
+      next: (days ? days + (days === 1 ? ' flower' : ' flowers') + ' this week, one for each day you moved. ' : 'A flower grows for each day you move this week. ') + (nx ? 'Coming soon: ' + nx[1] + ' at ' + nx[0] + ' sessions.' : 'The park is complete!') };
+  }
+  nudgeLines() {
+    const s = this.state, F = this.fams(), c = this.challenge(), h = new Date().getHours(), L = [];
+    if (c.done) L.push('We did the week thing!!', 'I want a bonus round. Do you?');
+    else if (c.n > 0) L.push(c.n + ' down! I am counting on my paws.');
+    else L.push('Sniff sniff. Which one smells fun?');
+    if (h < 10) L.push('Morning sniffs are the best sniffs.'); else if (h >= 21) L.push('Sleepy sniffs...');
+    const best = Object.keys(F).filter((k) => !F[k].hidden && F[k].ladder.length).sort((p, q) => this.stone(q) - this.stone(p))[0];
+    if (best && this.stone(best) > 2) L.push(F[best].name + ' is looking strong. I checked.');
+    L.push('Pick one! Any one!', 'I like the yellow one. It looks like cheese.', 'I sat on Balance once. Fell over.', 'Psst. Some paths are hiding.', 'Stones are my second favorite thing. After snacks.', 'I am a very long dog.', 'Boop me again.', 'Do you think I could do a handstand?');
+    return L;
+  }
   face(expr, z) {
     const m = {
       smile: '<path d="M13 25 Q20 32 27 25" fill="none" stroke="#161616" stroke-width="2.6" stroke-linecap="round"/>',
@@ -1020,7 +1116,7 @@ class Component extends DCLogic {
   planSecs(blocks) { return blocks.reduce((a, b) => a + b.moves.reduce((x, m) => x + m.secs + 15, 0), 0); }
   plan() {
     const s0 = this.state;
-    const key = JSON.stringify([this.moment(), s0.time, s0.energy, s0.mood, s0.seed, s0.swaps, s0.levels, s0.stones, s0.focus, s0.safe, s0.profile, new Date().getDate()]);
+    const key = JSON.stringify([s0.tiny, this.moment(), s0.time, s0.energy, s0.mood, s0.seed, s0.swaps, s0.levels, s0.stones, s0.focus, s0.safe, s0.profile, new Date().getDate()]);
     if (this._pk === key) return this._pc;
     const R = this.recipe(), target = this.sessTime() * 60, extra = R.map(() => 0);
     const order = [];
@@ -1043,7 +1139,8 @@ class Component extends DCLogic {
       b.moves.pop(); out = out.filter((x) => x.moves.length);
     }
     const over = this.planSecs(out);
-    if (over > target * 1.15) { const f = Math.max(0.55, target / over); out.forEach((b) => b.moves.forEach((m) => { m.secs = Math.max(20, Math.round(m.secs * f / 5) * 5); })); }
+    if (over > target * 1.15) { const f = Math.max(0.55, target / over); out.forEach((b) => b.moves.forEach((m) => { m.secs = Math.max(20, Math.round(m.secs * f / 5) * 5); m.rx = m.secs + ' s, easy pace'; })); }
+    if (s0.tiny) out.forEach((b) => b.moves.forEach((m) => { m.secs = 30; m.rx = m.secs + ' s, easy pace'; }));
     const tot = this.planSecs(out);
     if (tot < target * 0.92) { const f = Math.min(1.6, target / tot); out.forEach((b) => b.moves.forEach((m) => { m.secs = Math.round(m.secs * f / 5) * 5; })); }
     this._pk = key; this._pc = out;
@@ -1054,8 +1151,13 @@ class Component extends DCLogic {
     const h = new Date().getHours();
     return h >= 5 && h < 10 ? 'morning' : h >= 21 || h < 5 ? 'evening' : 'main';
   }
-  sessTime() { const m = this.moment(); return m === 'morning' ? 8 : m === 'midday' ? 6 : m === 'evening' ? 12 : this.state.time; }
+  sessTime() { if (this.state.tiny) return 2; const m = this.moment(); return m === 'morning' ? 8 : m === 'midday' ? 6 : m === 'evening' ? 12 : this.state.time; }
   recipe() {
+    if (this.state.tiny) return [
+      { key: 'tloose', name: 'Loosen up', kind: 'tinyLoose', n: 1, grow: 0 },
+      { key: 'tmove', name: 'One easy move', kind: 'tinyMove', n: 1, grow: 0 },
+      { key: 'tbreathe', name: 'Breathe out', kind: 'gentle', n: 1, grow: 0 }
+    ];
     const mo = this.moment();
     if (mo === 'morning') return [
       { key: 'wake', name: 'Wake up', kind: 'mobility', n: 2, grow: 1 },
@@ -1129,7 +1231,7 @@ class Component extends DCLogic {
       used[m.n] = (used[m.n] || 0) + 1;
       return m;
     };
-    const onLadder = (fam, ahead) => { const Fm = F[fam]; if (!Fm.ladder || !Fm.ladder.length) return null; const st = Math.max(0, this.stone(fam) - ease * 2); const lo = ahead ? st : Math.max(0, st - 1), hi = Math.min(Fm.ladder.length - 1, ahead ? st + 1 : st); const c = []; for (let i = lo; i <= hi; i++) { const m = BK.find((x) => x.n === Fm.ladder[i]); if (m) c.push(m); } return c.length ? c : null; };
+    const onLadder = (fam, ahead) => { const Fm = F[fam]; if (!Fm.ladder || !Fm.ladder.length) return null; const st = Math.max(0, this.stone(fam) - ease * 2); const lo = ahead ? st : Math.max(0, st - 1), hi = Math.min(Fm.ladder.length - 1, ahead ? st + 1 : st); const c = []; for (let i = lo; i <= hi; i++) { const m = BK.find((x) => x.n === Fm.ladder[i]); if (m) c.push(m); } if (c.some((m) => this.safeOK(m))) return c; for (let i = lo - 1; i >= 0; i--) { const m = BK.find((x) => x.n === Fm.ladder[i]); if (m && this.safeOK(m)) { c.push(m); if (c.filter((x) => this.safeOK(x)).length >= 2) break; } } return c.length ? c : null; };
     const atLevel = (fam, ahead) => { const lad = onLadder(fam, ahead); if (lad) return lad; const L = lv(fam); let c = BK.filter((m) => m.fam === fam && m.lvl === L); if (!c.length) c = BK.filter((m) => m.fam === fam && m.lvl <= L); return c; };
     const upTo = (fam) => BK.filter((m) => m.fam === fam && m.lvl <= lv(fam));
     const withAnim = (pool, anims, fallback) => { const p = pool.filter((m) => anims.indexOf(m.anim) >= 0); return p.length ? p : fallback || pool; };
@@ -1159,6 +1261,8 @@ class Component extends DCLogic {
         case 'yogaStand': return choose(withAnim(upTo('stretch'), STAND), k, true);
         case 'yogaBalance': return choose(BK.filter((m) => (m.fam === 'balance' && ['singleleg', 'tree'].indexOf(m.anim) >= 0) || m.anim === 'tree' || m.anim === 'dancer').filter((m) => m.lvl <= lv(m.fam) + 1), k);
         case 'yogaFloor': return choose(upTo('stretch').filter((m) => STAND.indexOf(m.anim) < 0).concat(U.splits ? upTo('splits') : []), k, true);
+        case 'tinyLoose': return choose(BK.filter((m) => m.fam === 'mobility' && m.lvl === 0), k);
+        case 'tinyMove': return choose(BK.filter((m) => ['legs', 'push', 'dance', 'core'].indexOf(m.fam) >= 0 && m.lvl === 0 && m.role !== 'f'), k);
         case 'gentle': return choose(BK.filter((m) => m.fam === 'stretch' && m.lvl <= Math.min(1, lv('stretch'))), k, true);
         case 'deskMob': return choose(BK.filter((m) => m.fam === 'mobility' && m.lvl <= 1 && ['jointcircles', 'twistlie', 'catcow', 'wave', 'hipcircle'].indexOf(m.anim) >= 0), k);
         case 'deskStretch': return choose(BK.filter((m) => m.fam === 'stretch' && m.lvl <= 1 && ['armstretch', 'quad', 'calfwall', 'fold', 'lowlunge'].indexOf(m.anim) >= 0), k);
@@ -1225,9 +1329,9 @@ class Component extends DCLogic {
     const sessions = (this.state.sessions || 0) + 1, lv = this.lvSum(), T = this.tricks();
     const learned = T.filter((t) => t[1] > (this.state.lvAtStart || 0) && t[1] <= lv);
     const ups = lv - (this.state.lvAtStart || 0);
-    const MS = { 1: "First session! I'm officially your dog now.", 3: 'Three sessions. I think this is a habit.', 5: "Five sessions. You're getting bendy.", 10: 'Ten sessions! Double digits, double wiggles.', 25: 'Twenty-five sessions. I am telling all the other dogs.', 50: 'Fifty sessions. Legend behavior.', 100: 'One hundred sessions. I need a bigger tail to wag.' };
-    const DONE = ['That was a good wiggle.', 'My tail has not stopped.', 'You moved. That is the whole point.', 'Hydrate, human.', 'Same time never? Whenever works.', 'I would give you a treat but I ate it.', 'Your body says thanks. So do I.', 'Ten out of ten wiggles.'];
-    let note = learned.length ? 'I learned a new trick: ' + learned[learned.length - 1][0] + '! Tap me on You to see it.' : MS[sessions] || (ups > 0 ? 'You leveled up ' + (ups === 1 ? 'once' : ups + ' times') + ' today. Look at you go.' : DONE[sessions % DONE.length]);
+    const MS = { 1: "First session! I'm officially your dog now.", 3: 'Three! I counted on my paws.', 5: 'Five! I ran out of paws.', 10: 'Ten sessions! Double digits, double wiggles.', 25: 'Twenty-five sessions. I am telling all the other dogs.', 50: 'Fifty. I made you a crown. Then I ate it.', 100: 'One hundred sessions. I need a bigger tail to wag.' };
+    const DONE = ['That was a good wiggle.', 'My tail has not stopped.', 'Zoomies!', 'Hydrate, human.', 'I need a nap now.', 'I would give you a treat but I ate it.', 'Can we do the wiggly one again?', 'Ten out of ten wiggles.', 'I did all of it too. Mostly.'];
+    let note = learned.length ? 'I learned a new trick: ' + learned[learned.length - 1][0] + '! Come see on You.' : MS[sessions] || (ups > 0 ? 'You went up ' + (ups === 1 ? 'a level' : ups + ' levels') + ' today! I did a spin.' : DONE[sessions % DONE.length]);
     const face = learned.length || MS[sessions] ? 'grin' : ups > 0 ? 'smirk' : 'smile';
     const fl = this.flat(), nw = fl.filter((m) => !(this.state.triedAtStart || {})[m.n]).length;
     this.setState({ sessions, doneNote: note, doneFace: face, doneVals: [Math.max(1, Math.round(this.planSecs(this.plan()) / 60)), fl.length, nw, Math.max(0, ups)], doneTick: this.state.calm ? 99 : 0 });
@@ -1249,15 +1353,15 @@ class Component extends DCLogic {
     if (!mi) return;
     const fam = this.fams()[mi.fam], LV = ['Foundation', 'Beginner', 'Intermediate', 'Advanced', 'Pro'];
     let levels = s.levels, stones = s.stones || {};
-    let msg = 'Got it. Same spot next time.';
+    let msg = 'Okay!';
     if (fam.ladder.length && (kind === 'easy' || kind === 'hard')) {
       const r = this.moveStone(mi.fam, kind === 'easy' ? 1 : -1);
       if (r.moved) { levels = r.levels; stones = r.stones; }
-      if (kind === 'easy') msg = !r.moved ? 'You are at the top of ' + fam.name + '!' : r.lvChanged ? 'Nice! ' + fam.name + ' reaches ' + LV[levels[mi.fam]] + '.' : 'Nice! One stone further on ' + fam.name + '.';
-      else msg = r.moved ? 'No worries, ' + fam.name + ' eases back one stone.' : 'Got it. We will keep it gentle.';
+      if (kind === 'easy') msg = !r.moved ? 'Top of ' + fam.name + '! I cannot even do that.' : r.lvChanged ? fam.name + ' reaches ' + LV[levels[mi.fam]] + '! I did a spin.' : 'Wheee! ' + fam.name + ' moves one stone.';
+      else msg = r.moved ? 'Okay, one stone back on ' + fam.name + '.' : 'Okay! Gentle it is.';
     }
     const was = this.unlocked(s.levels), now = this.unlocked(levels);
-    if (Object.keys(now).some((k) => !was[k])) msg += ' A hidden path just unlocked!';
+    if (Object.keys(now).some((k) => !was[k])) msg += ' Wait... I smell a hidden path!';
     if (msg.indexOf('Nice') === 0) this.sfx('level');
     this.setState({ levels, stones, fb: s.fb + 1, askFb: false, fbMsg: msg });
   }
@@ -1346,7 +1450,7 @@ class Component extends DCLogic {
     const LAYOUT = [['push', 0, 0, 170, 150], ['pull', 170, 0, 100, 90], ['freezes', 270, 0, 80, 90], ['dance', 170, 90, 180, 60], ['legs', 0, 150, 110, 150], ['core', 110, 150, 130, 90], ['splits', 240, 150, 110, 90], ['crawls', 110, 240, 90, 60], ['strikes', 200, 240, 150, 60], ['stretch', 0, 300, 150, 170], ['balance', 150, 300, 110, 90], ['flow', 260, 300, 90, 90], ['mobility', 150, 390, 200, 80]];
     const cells = LAYOUT.map(([k, x, y, w, h]) => {
       const box = 'position:absolute;left:' + (x + 3) + 'px;top:' + (y + 3) + 'px;width:' + (w - 6) + 'px;height:' + (h - 6) + 'px;background:#FFFFFF;border:0;padding:0;overflow:hidden;text-align:left;cursor:pointer;font-family:Inter Tight,sans-serif';
-      if (F[k].hidden && !U[k]) return { open: () => this.setState({ hint: 'Hidden path! Reach Intermediate in ' + F[F[k].parents[0]].name + ' and ' + F[F[k].parents[1]].name + ' to find out.' }), aria: 'Locked hidden path', box, fill: 'display:none', shape: 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#D6D6D6', name: '', label: 'display:none', lvl: 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#D0D0D0', lvlName: '?' };
+      if (F[k].hidden && !U[k]) return { open: () => this.setState({ hint: 'Something is hiding in here. It smells like ' + F[F[k].parents[0]].name + ' and ' + F[F[k].parents[1]].name + '.' }), aria: 'Locked hidden path', box, fill: 'display:none', shape: 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#D6D6D6', name: '', label: 'display:none', lvl: 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#D0D0D0', lvlName: '?' };
       const fm = F[k], lv = s.levels[k], frac = fm.ladder.length ? (this.stone(k) + 1) / fm.ladder.length : (lv + 1) / 5, full = frac >= 1;
       return {
         open: () => { const seen = Object.assign({}, s.seen); seen[k] = true; this.setState({ pathOpen: k, seen, hint: '' }); this.scrollStone(); },
@@ -1372,11 +1476,11 @@ class Component extends DCLogic {
       return {
         n, here, lvl: first || here ? (here ? 'You are here · ' : '') + LV5[lvl] : '', aria: LV5[lvl] + ': ' + n,
         open: () => this.openMove(n, 'paths'),
-        box: 'position:absolute;left:' + sx(i) + '%;top:' + sy(i) + 'px;width:0;height:0;border:0;padding:0;background:transparent;cursor:pointer',
-        shape: 'position:absolute;left:-' + sz / 2 + 'px;top:-' + sz / 2 + 'px;width:' + sz + 'px;height:' + sz + 'px;box-sizing:border-box;border-radius:' + (pf.shape === 'square' || pf.shape === 'diamond' ? '6px' : '50%') + ';' + (done ? 'background:' + pf.color : here ? 'background:' + pf.color + ';box-shadow:0 0 0 5px #FFFFFF,0 0 0 8px ' + pf.color : 'background:#FFFFFF;border:3px solid ' + (first ? '#BDBDBD' : '#E4E4E4')),
-        label: 'position:absolute;top:-' + (first || here ? 17 : 9) + 'px;' + (right ? 'left:' + (sz / 2 + 12) + 'px;text-align:left' : 'right:' + (sz / 2 + 12) + 'px;text-align:right') + ';width:160px;display:flex;flex-direction:column;font:' + (here ? 900 : first ? 800 : 600) + ' ' + (here ? 15 : 14) + 'px Inter Tight,sans-serif;line-height:1.1;color:' + (i > pst ? '#8A8A8A' : '#161616'),
+        box: 'position:absolute;left:' + sx(i) + '%;top:' + sy(i) + 'px;width:' + sz + 'px;height:' + sz + 'px;margin:-' + sz / 2 + 'px 0 0 -' + sz / 2 + 'px;border:0;padding:0;background:transparent;cursor:pointer',
+        shape: 'position:absolute;left:0;top:0;width:' + sz + 'px;height:' + sz + 'px;box-sizing:border-box;border-radius:' + (pf.shape === 'square' || pf.shape === 'diamond' ? '6px' : '50%') + ';' + (done ? 'background:' + pf.color : here ? 'background:' + pf.color + ';box-shadow:0 0 0 5px #FFFFFF,0 0 0 8px ' + pf.color : 'background:#FFFFFF;border:3px solid ' + (first ? '#BDBDBD' : '#E4E4E4')),
+        label: 'position:absolute;top:' + (sz / 2 - (first || here ? 17 : 9)) + 'px;' + (right ? 'left:' + (sz + 12) + 'px;text-align:left' : 'right:' + (sz + 12) + 'px;text-align:right') + ';width:160px;display:flex;flex-direction:column;font:' + (here ? 900 : first ? 800 : 600) + ' ' + (here ? 15 : 14) + 'px Inter Tight,sans-serif;line-height:1.1;color:' + (i > pst ? '#8A8A8A' : '#161616'),
         sub: 'font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-top:3px;color:' + (here ? pf.color === '#FFC20E' ? '#8A6A00' : pf.color : '#9A9A9A'),
-        dog: 'position:absolute;left:-17px;top:-48px;' + this.face('grin', 34)
+        dog: 'position:absolute;left:' + (sz / 2 - 17) + 'px;top:' + (sz / 2 - 48) + 'px;' + this.face('grin', 34)
       };
     });
     const trailH = TOP0 * 2 + (nS - 1) * ROW;
@@ -1429,7 +1533,7 @@ class Component extends DCLogic {
     const dayTitle = (selD === today ? 'Today · ' : '') + DAYN[selDate.getDay()] + ', ' + MONTHS[Mo].slice(0, 3) + ' ' + selD;
     let dayLine;
     if (se) dayLine = [se.m ? se.m + ' min' : '', se.mv.length ? se.mv.length + (se.mv.length === 1 ? ' move' : ' moves') : '', se.nw.length ? se.nw.length + ' new' : ''].filter(Boolean).join(' · ') || 'You moved.';
-    else dayLine = selD > today ? "Hasn't happened yet." : selD === today ? 'Nothing yet today. Whenever you are ready.' : 'A rest day. Those count too.';
+    else dayLine = selD > today ? "Hasn't happened yet." : selD === today ? 'Nothing yet today.' : 'Nap day.';
     const dayFams = se ? Object.keys(se.f).filter((k) => F[k]).sort((p, q) => se.f[q] - se.f[p]).map((k) => ({ name: F[k].name, shape: this.shp(F[k].shape, F[k].color, 12) })) : [];
     const dayOrder = se ? se.nw.concat(se.mv.filter((n) => se.nw.indexOf(n) < 0)) : [];
     const dayMore = dayOrder.length > 4 ? '+' + (dayOrder.length - 4) + ' more' : '';
@@ -1454,7 +1558,7 @@ class Component extends DCLogic {
     })));
     const rn = reg[region] || 0;
     const anyLog = Object.keys(s.log || {}).length > 0;
-    const regionLine = !anyLog ? 'Your first session will light this up.' : rn === 0 ? 'No love here yet this week.' : rn <= 2 ? 'A little love this week (' + rn + (rn === 1 ? ' move' : ' moves') + ').' : rn <= 5 ? 'Nicely worked this week (' + rn + ' moves).' : 'Lots of love this week (' + rn + ' moves). Maybe let it rest.';
+    const regionLine = !anyLog ? 'Nothing here yet.' : rn === 0 ? 'Not this week yet.' : rn <= 2 ? 'A little this week (' + rn + (rn === 1 ? ' move' : ' moves') + ').' : rn <= 5 ? 'Worked this week (' + rn + ' moves).' : 'Lots this week (' + rn + ' moves).';
     const famOrder = Object.keys(F).filter((k) => k !== 'cond');
     const collection = [];
     famOrder.forEach((fk) => allMoves.filter((n) => MI[n].fam === fk).forEach((n) => {
@@ -1480,7 +1584,7 @@ class Component extends DCLogic {
         peekGo: () => { if (!locked) this.setState({ peek: s.peek === fk ? null : fk }); },
         peekMoves: (() => { const ah = ms.filter((n) => !s.tried[n] && MI[n].lvl > (s.levels[fk] || 0)); const nl = ah.length ? Math.min.apply(null, ah.map((n) => MI[n].lvl)) : 0; return ah.filter((n) => MI[n].lvl === nl).map((n) => ({ n, open: () => this.openMove(n, 'you') })); })(),
         nextLvl: (() => { const ah = ms.filter((n) => !s.tried[n] && MI[n].lvl > (s.levels[fk] || 0)); return ah.length ? ['Foundation', 'Beginner', 'Intermediate', 'Advanced', 'Pro'][Math.min.apply(null, ah.map((n) => MI[n].lvl))] : ''; })(),
-        laterLine: (() => { const ah = ms.filter((n) => !s.tried[n] && MI[n].lvl > (s.levels[fk] || 0)); if (!ah.length) return ''; const nl = Math.min.apply(null, ah.map((n) => MI[n].lvl)); const more = ah.filter((n) => MI[n].lvl > nl).length; return more ? 'and ' + more + ' more for later. No rush.' : 'That is everything here.'; })(),
+        laterLine: (() => { const ah = ms.filter((n) => !s.tried[n] && MI[n].lvl > (s.levels[fk] || 0)); if (!ah.length) return ''; const nl = Math.min.apply(null, ah.map((n) => MI[n].lvl)); const more = ah.filter((n) => MI[n].lvl > nl).length; return more ? 'and ' + more + ' more after that.' : 'That is everything here.'; })(),
         hasReady: !locked && ms.some((n) => !s.tried[n] && MI[n].lvl <= (s.levels[fk] || 0)),
         readyMore: (() => { const n = ms.filter((x) => !s.tried[x] && MI[x].lvl <= (s.levels[fk] || 0)).length - 6; return n > 0 ? '+' + n + ' more at your level' : ''; })(),
         hasGot: got.length > 0
@@ -1495,8 +1599,8 @@ class Component extends DCLogic {
         box: 'position:relative;height:26px;min-width:26px;padding:0 7px;border:0;font:800 11px Inter Tight,sans-serif;cursor:pointer;' + (on ? 'background:#161616;color:#FFFFFF' : 'background:#EFEFEF;color:#B0B0B0') };
     });
     const cT = toggleSt(s.calm, '#0E8178'), sT = toggleSt(s.sound, '#FFC20E'), chT = toggleSt(s.chatter, '#E5282E');
-    const restLines = ['Sip some water!', 'Shake it out.', 'Breathe in... out.', 'You got this!', 'Roll your shoulders.', 'Wiggle your toes.', 'Nice one.', 'Unclench your jaw.', 'Long exhale...', 'Halfway-ish!'];
-    const sessLines = ["Let's gooo!", 'Wiggle time!', 'Ready when you are!', 'Snoot boop for luck.', 'I stretched already.', 'This one looks fun.'];
+    const restLines = ['Water break! Slurp.', 'Shake shake shake.', 'Breathe in... out.', 'Pant pant pant.', 'I am lying down for a sec.', 'I am wiggling my toes.', 'Nice one.', 'Big sigh.', 'Halfway-ish!', 'Was that a squirrel?'];
+    const sessLines = ["Let's gooo!", 'Wiggle time!', 'Is it wiggle time?', 'Snoot boop for luck.', 'I stretched already.', 'This one looks fun.'];
     const petLines = ['Hehe.', 'More please.', 'Best human.', '*happy wiggle*', 'Again!', 'Ears too!'];
     return {
       hasBanner: fresh.length > 0,
@@ -1512,7 +1616,7 @@ class Component extends DCLogic {
       startAll: () => { this.ensureAudio(); this.sfx('start'); this.transitionTo('player', '#161616', { lvAtStart: this.lvSum(), triedAtStart: Object.assign({}, s.tried), idx: 0, remaining: per0, paused: false, resting: false, askFb: false, fbMsg: '' }); },
       rootClass: s.calm ? 'calm' : '',
       chatter: s.chatter,
-      restLine: restLines[(s.idx + s.seed) % restLines.length],
+      restLine: s.idx === 0 ? 'Huff huff. The start always makes me huff.' : s.idx === 1 ? 'Okay. My legs woke up.' : restLines[(s.idx + s.seed) % restLines.length],
       sessLine: sessLines[(s.seed + (s.sessions || 0)) % sessLines.length],
       petLine: petLines[(s.homePets || 0) % petLines.length],
       doneStats: [['Minutes', '#E5282E', '#FFFFFF'], ['Moves', '#1556C2', '#FFFFFF'], ['New', '#FFC20E', '#161616'], ['Level-ups', '#FFFFFF', '#161616']].map((d, i) => {
@@ -1520,7 +1624,8 @@ class Component extends DCLogic {
         const shown = p > 0;
         return { l: d[0], v: Math.round(val * p), box: 'display:flex;flex-direction:column;align-items:center;justify-content:center;height:74px;margin:0 ' + (i < 3 ? 3 : 0) + 'px 0 0;background:' + d[1] + ';color:' + d[2] + ';transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .2s;opacity:' + (shown ? 1 : 0.15) + ';transform:scale(' + (p >= 1 ? 1 : shown ? 1.12 : 0.85) + ')' };
       }),
-      doneNote: s.doneNote || 'That was a good wiggle.', doneFaceSt: this.face(s.doneFace || 'grin', 44),
+      friendGo: () => this.shareFriend(), shareMsg: s.shareMsg || 'Wiggle with a friend →',
+      doneNote: (() => { try { const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); const inst = navigator.standalone || matchMedia('(display-mode: standalone)').matches; if (ios && !inst && [2, 4].indexOf(s.sessions || 0) >= 0) return 'Put me on your Home Screen? I like it there. (Share, then Add to Home Screen)'; } catch (e) {} return s.doneNote || 'That was a good wiggle.'; })(), doneFaceSt: this.face(s.doneFace || 'grin', 44),
       showUpNext: !s.askFb && !s.fbMsg,
       askFb: s.askFb, hasFbMsg: !!s.fbMsg && !s.askFb, fbMsg: s.fbMsg,
       lastMove: cur.n,
@@ -1536,9 +1641,17 @@ class Component extends DCLogic {
       navYou: () => this.swipeTo('you'),
       tabClass: s.swipe || 'a-screen',
       isPaths: s.screen === 'paths', isMove: s.screen === 'move', isExplore: s.screen === 'explore', isYou: s.screen === 'you',
-      pathsSub: s.fb < 3 ? 'Noodle is still learning your level. Tap Easy, Just right or Hard after moves and these fill in on their own.' : 'Your progress paints the picture. Tap a block to see its steps.',
+      pathsSub: 'Tap a path to see its stones.',
       cells,
-      nudgeText: s.hint ? s.hint : s.fb < 3 ? 'Not sure where you stand? No quiz needed. Just move and I will figure it out.' : 'Looking good! Tap a block to see what is next.',
+      nudgeText: s.hint ? s.hint : (() => { const n = s.nudgeN || 0; if (n >= 12) return n % 2 ? 'Okay okay, I am dizzy.' : 'Hehe. Stop. (Do not stop.)'; const L = this.nudgeLines(); return L[n % L.length]; })(),
+      nudgeHead: this.dogHead(s.hint ? 'wow' : (s.nudgeN || 0) >= 12 ? 'dizzy' : new Date().getHours() >= 21 && !s.nudgeN ? 'sleepy' : ['calm', 'happy', 'wink', 'wow', 'happy', 'calm'][(s.nudgeN || 0) % 6], 54),
+      park: this.park(),
+      treeCls: s.parkTree ? (s.parkTree % 2 ? 'tshake1' : 'tshake2') : '', appleCls: s.parkTree ? (s.parkTree % 2 ? 'afall1' : 'afall2') : 'anone',
+      ballCls: s.parkBall ? (s.parkBall % 2 ? 'bbounce1' : 'bbounce2') : '',
+      treeTap: () => { this.sfx('pop'); this.setState({ parkTree: (s.parkTree || 0) + 1 }); },
+      ballTap: () => { this.sfx('bark'); this.setState({ parkBall: (s.parkBall || 0) + 1 }); },
+      nudgeHop: (s.nudgeN || 0) % 2 ? 'nhop1' : (s.nudgeN ? 'nhop2' : ''),
+      nudgeTap: () => { const n = (s.nudgeN || 0) + 1; this.sfx(n % 3 === 0 ? 'pop' : 'bark'); this.setState({ nudgeN: n, hint: '' }); },
       pathIsOpen: !!s.pathOpen,
       closePath: () => this.setState({ pathOpen: null, celebrate: false }),
       pd: { name: pf.name, lvlName: LVL[plv] + ' · stone ' + (pst + 1) + ' of ' + nS },
@@ -1562,7 +1675,7 @@ class Component extends DCLogic {
       closeMove: go(s.moveFrom, s.moveFrom === 'session' ? '#1556C2' : '#FFFFFF'),
       query: s.query, onQuery: (e) => this.setState({ query: e.target.value }),
       hasQuery: !!q, noQuery: !q,
-      resultCount: results.length ? results.length + (results.length === 1 ? ' match' : ' matches') : 'No matches yet. Try hips, push or kick.',
+      resultCount: results.length ? results.length + (results.length === 1 ? ' match' : ' matches') : 'Nothing found. Try hips, push or kick.',
       results: results.map((n) => ({ n, fam: F[MI[n].fam].name, shape: this.shp(F[MI[n].fam].shape, F[MI[n].fam].color, 18), open: () => this.openMove(n, 'paths') })),
       famTiles: Object.keys(F).filter((k) => k !== 'cond' && (!F[k].hidden || U[k])).map((k, i) => ({
         name: F[k].name,
@@ -1592,12 +1705,12 @@ class Component extends DCLogic {
       openBody: () => this.setState({ sheet: 'body' }), openMoves: () => this.setState({ sheet: 'moves' }), closeSheet: () => this.setState({ sheet: null }),
       foundN, foundTotal: collection.length,
       bodyBars: ['shoulders', 'chest', 'arms', 'core', 'back', 'hips', 'legs', 'glutes'].map((r) => ({ s: 'flex:1;background:' + (reg[r] ? '#E5282E' : '#E4E4E4') + ';height:' + Math.max(4, Math.min(34, (reg[r] || 0) * 6)) + 'px' })),
-      bodyTileLine: (() => { const ks = Object.keys(reg); if (!ks.length) return 'Nothing yet this week'; const top = ks.sort((p, q) => reg[q] - reg[p])[0]; return 'Most love: ' + pretty[top]; })(),
+      bodyTileLine: (() => { const ks = Object.keys(reg); if (!ks.length) return 'Nothing yet this week'; const top = ks.sort((p, q) => reg[q] - reg[p])[0]; return 'Most worked: ' + pretty[top]; })(),
       collection, collFams, foundCount: foundN + ' of ' + collection.length,
       foundBar: 'display:block;height:100%;background:#161616;width:' + Math.round(foundN / Math.max(1, collection.length) * 100) + '%',
-      collectHint: 'Every move you try fills in a bar. Tap a family to see what you found.',
+      collectHint: 'Moves you have tried. Tap a family to see them.',
       tricks, trickCount: openT.length + ' of ' + TR.length,
-      trickLine: !(s.sessions || Object.keys(s.log || {}).length) ? "Do your first session and I'll start learning tricks." : nextT ? 'Tap Noodle! Level up ' + (nextT[1] - lvSum) + ' more ' + (nextT[1] - lvSum === 1 ? 'time' : 'times') + ' to teach ' + nextT[0].toLowerCase() + '.' : 'Noodle knows every trick. Show-off.',
+      trickLine: !(s.sessions || Object.keys(s.log || {}).length) ? "I don't know any tricks yet." : nextT ? 'Tap me! ' + (nextT[1] - lvSum) + ' more ' + (nextT[1] - lvSum === 1 ? 'level' : 'levels') + ' and I learn ' + nextT[0].toLowerCase() + '.' : 'Noodle knows every trick. Show-off.',
       doTrick: () => this.doTrick(),
       trickAnim: 'display:block;transform-origin:' + ((curT && curT[4]) || '50% 90%') + ';' + (curT && !s.calm ? 'animation:' + curT[2] + (s.trickN % 2 ? '' : '2') + ' ' + curT[3] + 's cubic-bezier(.3,.7,.4,1) both' : ''),
       settingsOpen: s.settingsOpen, openSettings: () => this.setState({ settingsOpen: true, setMsg: '', resetArm: false }), closeSettings: () => this.setState({ settingsOpen: false }),
@@ -1605,6 +1718,7 @@ class Component extends DCLogic {
       soundOn: s.sound ? 'true' : 'false', soundTrack: sT.track, soundKnob: sT.knob, toggleSound: () => { this.ensureAudio(); const on = !s.sound; this.setState({ sound: on }); if (on) setTimeout(() => this.sfx('level'), 30); },
       testSound: () => { this.ensureAudio(); if (!s.sound) this.setState({ sound: true }); setTimeout(() => this.sfx('finish'), 30); },
       chatterOn: s.chatter ? 'true' : 'false', chatterTrack: chT.track, chatterKnob: chT.knob, toggleChatter: () => this.setState({ chatter: !s.chatter }),
+      calOpts: [['morning', 'Morning'], ['midday', 'Midday'], ['evening', 'Evening']].map((o) => ({ t: o[1], pick: () => this.remindCal(o[0]), box: 'flex:1;height:44px;font:800 14px Inter Tight,sans-serif;border:3px solid #161616;background:#FFFFFF;color:#161616' })),
       restOpts: [10, 15, 30, 45].map((v) => ({ t: v + ' s', on: (s.rest || 15) === v ? 'true' : 'false', pick: () => this.setState({ rest: v }), box: 'flex:1;height:44px;font:800 14px Inter Tight,sans-serif;border:3px solid #161616;' + ((s.rest || 15) === v ? 'background:#161616;color:#FFFFFF' : 'background:#FFFFFF;color:#161616') })),
       backup: () => this.backup(), restore: () => this.restore(),
       resetLabel: s.resetArm ? 'Tap again to erase everything' : 'Reset progress',
@@ -1612,12 +1726,14 @@ class Component extends DCLogic {
       resetAll: () => {
         if (!s.resetArm) { this.setState({ resetArm: true }); clearTimeout(this.rt); this.rt = setTimeout(() => this.setState({ resetArm: false }), 4000); return; }
         const lv = {}; Object.keys(s.levels).forEach((k) => { lv[k] = 0; });
-        this._pk = null; this.setState({ levels: lv, stones: {}, history: {}, log: {}, tried: {}, seen: {}, seenTricks: {}, fb: 0, resetArm: false, selDay: null, setMsg: 'Fresh start. Noodle is ready when you are.' });
+        this._pk = null; this.setState({ levels: lv, stones: {}, history: {}, log: {}, tried: {}, seen: {}, seenTricks: {}, fb: 0, resetArm: false, selDay: null, setMsg: 'All clear. Hi again!' });
       },
       setMsg: s.setMsg,
       noodleArt: (() => { const n = this.noodleSvg(s.sessions); const w = Math.round(104 * n.w / 230); return 'display:block;width:' + w + 'px;height:' + Math.round(w * 144 / n.w) + 'px;background:url("' + n.uri + '") center/contain no-repeat'; })(),
       growLine: (() => { const n = this.noodleSvg(s.sessions), next = this.outfits().find((o) => (s.sessions || 0) < o[0]); const pct = Math.round(n.L / 140 * 100); return (pct ? 'Noodle is ' + pct + '% longer than when you met. ' : 'Noodle grows a little every session. ') + (next ? 'Next: ' + next[2] + ' at ' + next[0] + ' sessions.' : 'Fully dressed. Iconic.'); })(),
-      ch: (() => { const c = this.challenge(); return { t: c.t, count: c.n + ' of ' + c.goal, done: c.done, todo: !c.done, segs: Array.from({ length: c.goal }, (_, i) => ({ s: 'flex:1;height:8px;background:' + (i < c.n ? '#0B7A3E' : '#E4E4E4') })), go: () => this.transitionTo('session', '#1556C2', Object.assign({ swaps: {}, idx: 0, visited: true, focus: null }, c.mood ? { mood: c.mood } : {})) }; })(),
+      ch: (() => { const c = this.challenge(); return { t: c.t, label: c.bonus ? 'This week · bonus ' + c.bonus : 'This week', count: c.n + ' of ' + c.goal, done: c.done, todo: !c.done, hasFound: c.found.length > 0, more: c.done && c.more, allDone: c.done && !c.more,
+        found: c.found.map((x) => ({ t: x, open: () => { if (c.moves) this.openMove(x, 'paths'); }, box: 'border:2px solid #161616;background:#FFFFFF;padding:2px 7px;font:700 11px Inter Tight,sans-serif;color:#161616' })),
+        another: () => { this.sfx('pop'); this.setState({ chBonus: { w: c.wid, n: c.bonus + 1 } }); }, segs: Array.from({ length: c.goal }, (_, i) => ({ s: 'flex:1;height:8px;background:' + (i < c.n ? '#0B7A3E' : '#E4E4E4') })), go: () => this.transitionTo('session', '#1556C2', Object.assign({ swaps: {}, idx: 0, visited: true, focus: null }, c.mood ? { mood: c.mood } : {})) }; })(),
       chFace: this.face('smirk', 34), chFaceDone: this.face('grin', 34),
       shareSession: () => this.shareCard(),
       showWelcome: !(s.safe && s.safe.done),
@@ -1682,7 +1798,8 @@ class Component extends DCLogic {
       energyWrap: 'position:relative;height:44px;--th:' + eCol,
       energyTri: 'display:block;clip-path:polygon(50% 0,100% 100%,0 100%);transition:width .15s,height .15s,background .3s;background:' + eCol + ';height:' + triH + 'px;width:' + Math.round(triH * 1.1) + 'px',
       energyTrack: track(ep, eCol),
-      go: () => this.transitionTo('session', '#1556C2', { swaps: {}, visited: true, focus: null }),
+      go: () => this.transitionTo('session', '#1556C2', { swaps: {}, visited: true, focus: null, tiny: false }),
+      tinyGo: () => { this._pk = null; this.transitionTo('session', '#1556C2', { swaps: {}, visited: true, focus: null, tiny: true }); },
       petHome: () => { this.ensureAudio(); this.sfx('bark'); clearTimeout(this.pt); this.setState({ homePets: s.homePets + 1, petting: true }); this.pt = setTimeout(() => this.setState({ petting: false }), 1300); },
       petting: s.petting,
       petWiggle: 'display:block;transform-origin:50% 100%;' + (s.homePets ? 'animation:' + (s.homePets % 2 ? 'wiggleA' : 'wiggleB') + ' .7s cubic-bezier(.3,.7,.4,1) both' : ''),
@@ -1697,7 +1814,7 @@ class Component extends DCLogic {
       petStyle: s.pets ? 'animation:' + (s.pets % 2 ? 'hop' : 'hopB') + ' .7s cubic-bezier(.3,.7,.4,1) both' : '',
       home: () => this.transitionTo('checkin', '#FFFFFF', { idx: 0 }),
       shuffle: () => this.setState({ seed: s.seed + 1, swaps: {} }),
-      summary: (this.moment() !== 'main' ? { morning: 'Morning wake-up', midday: 'Midday reset', evening: 'Evening wind-down' }[this.moment()] : s.focus ? pretty[s.focus] + ' focus' : s.mood === 'Chill' ? 'Chill day' : energyLabel + ' energy') + ' · ' + flat.length + ' moves' + (s.focus ? '' : ' · ' + (s.mood === 'Surprise' ? 'surprise' : s.mood.toLowerCase())),
+      summary: (s.tiny ? 'Just 2 minutes' : this.moment() !== 'main' ? { morning: 'Morning wake-up', midday: 'Midday reset', evening: 'Evening wind-down' }[this.moment()] : s.focus ? pretty[s.focus] + ' focus' : s.mood === 'Chill' ? 'Chill day' : energyLabel + ' energy') + ' · ' + flat.length + ' moves' + (s.focus ? '' : ' · ' + (s.mood === 'Surprise' ? 'surprise' : s.mood.toLowerCase())),
       blocks,
       start: () => { this.ensureAudio(); this.sfx('start'); }, startGo: () => this.transitionTo('player', '#161616', { lvAtStart: this.lvSum(), triedAtStart: Object.assign({}, s.tried), idx: 0, remaining: per0, paused: false, resting: false, askFb: false, fbMsg: '' }),
       stage: 'position:relative;height:500px;flex:none;overflow:hidden;color:' + (s.resting ? '#161616' : cur.ink) + ';background:' + (s.resting ? '#EDEDED' : cur.color) + ';transition:background .5s,color .5s',
