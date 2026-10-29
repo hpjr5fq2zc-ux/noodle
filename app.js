@@ -614,7 +614,7 @@ class Component extends DCLogic {
         shape: 'position:absolute;left:9px;top:9px;' + this.shp(fm.shape, full ? fm.ink : fm.color, 18),
         name: fm.name,
         label: 'position:absolute;left:34px;right:6px;top:10px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;line-height:1.1;color:' + (full ? fm.ink : '#161616'),
-        lvl: 'position:absolute;left:9px;bottom:7px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:' + fm.ink + ';opacity:' + (h > 70 ? 1 : 0),
+        lvl: 'position:absolute;left:9px;bottom:7px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:' + (((lv + 1) * 0.2 * h) >= 26 ? fm.ink : '#161616') + ';opacity:' + (h > 70 ? 1 : 0),
         lvlName: LVL[lv]
       };
     });
