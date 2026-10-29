@@ -80,6 +80,9 @@
   window.bootNoodle = function (Component) { comp = new Component({}); window.__noodle = comp; draw(); };
 
   var lastLand = null;
+  var probe = document.createElement('div');
+  probe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)';
+  document.body.appendChild(probe);
   function bounceShapes() {
     if (document.body.querySelector('.calm') || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
     var els = document.querySelectorAll('#dc-root [aria-hidden="true"]:not(button *):not(.expand):not(.confetti)');
@@ -106,10 +109,12 @@
     if (lastLand !== null && land !== lastLand) setTimeout(bounceShapes, 60);
     lastLand = land;
     var W = land ? 844 : 390, H = land ? 390 : 844;
-    var s = Math.min(window.innerWidth / W, window.innerHeight / H);
+    var cs = getComputedStyle(probe), sl = parseFloat(cs.paddingLeft) || 0, sr = parseFloat(cs.paddingRight) || 0;
+    var aw = window.innerWidth - sl - sr;
+    var s = Math.min(aw / W, window.innerHeight / H);
     stage.style.width = W + 'px'; stage.style.height = H + 'px';
     stage.style.transform = 'scale(' + s + ')';
-    stage.style.left = Math.max(0, (window.innerWidth - W * s) / 2) + 'px';
+    stage.style.left = (sl + Math.max(0, (aw - W * s) / 2)) + 'px';
     stage.style.top = Math.max(0, (window.innerHeight - H * s) / 2) + 'px';
   }
   window.addEventListener('resize', fit);window.addEventListener('orientationchange', function(){setTimeout(fit,200);});
