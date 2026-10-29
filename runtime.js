@@ -79,7 +79,15 @@
   }
   window.bootNoodle = function (Component) { comp = new Component({}); window.__noodle = comp; draw(); };
 
+  var lastLand = null;
   function fit() {
+    var land = window.innerWidth > window.innerHeight;
+    document.body.classList.toggle('wide', land);
+    if (lastLand !== null && land !== lastLand) {
+      var root = document.getElementById('dc-root');
+      if (root) { root.classList.remove('turn-in', 'turn-back'); void root.offsetWidth; root.classList.add(land ? 'turn-in' : 'turn-back'); }
+    }
+    lastLand = land;
     var ls = window.innerWidth > window.innerHeight && window.innerHeight < 500;
     document.body.classList.toggle('ls', ls);
     if (ls) return;
