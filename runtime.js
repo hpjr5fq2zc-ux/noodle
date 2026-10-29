@@ -103,14 +103,14 @@
   function fit() {
     var land = window.innerWidth > window.innerHeight;
     document.body.classList.toggle('wide', land);
-    if (lastLand !== null && land !== lastLand) bounceShapes();
+    if (lastLand !== null && land !== lastLand) setTimeout(bounceShapes, 60);
     lastLand = land;
-    var ls = window.innerWidth > window.innerHeight && window.innerHeight < 500;
-    document.body.classList.toggle('ls', ls);
-    if (ls) return;
-    var s = Math.min(window.innerWidth / 390, window.innerHeight / 844);
+    var W = land ? 844 : 390, H = land ? 390 : 844;
+    var s = Math.min(window.innerWidth / W, window.innerHeight / H);
+    stage.style.width = W + 'px'; stage.style.height = H + 'px';
     stage.style.transform = 'scale(' + s + ')';
-    stage.style.left = Math.max(0, (window.innerWidth - 390 * s) / 2) + 'px';
+    stage.style.left = Math.max(0, (window.innerWidth - W * s) / 2) + 'px';
+    stage.style.top = Math.max(0, (window.innerHeight - H * s) / 2) + 'px';
   }
   window.addEventListener('resize', fit);window.addEventListener('orientationchange', function(){setTimeout(fit,200);});
   fit();

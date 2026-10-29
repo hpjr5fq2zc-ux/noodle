@@ -103,23 +103,65 @@ input[type=range]:focus-visible{outline:3px solid #1556C2;outline-offset:2px;bor
 html,body{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;margin:0;height:100%;background:#FFFFFF;overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 #stage{touch-action:manipulation;position:absolute;top:0;left:0;width:390px;height:844px;transform-origin:0 0}
 button{cursor:pointer}
-body.wide:not(.ls)::before{content:"";position:fixed;left:0;bottom:0;width:18vh;height:9vh;border-radius:18vh 18vh 0 0;background:#1556C2}
-body.wide:not(.ls)::after{content:"";position:fixed;right:0;top:0;width:14vh;height:14vh;border-bottom-left-radius:100%;background:#FFC20E}
-body.ls #stage{position:fixed;inset:0;left:0!important;width:auto!important;height:auto!important;transform:none!important;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;padding:0 env(safe-area-inset-right) 0 env(safe-area-inset-left)}
-body.ls #dc-root>div{margin:0 auto}
-body.ls::before{content:"";position:fixed;left:0;bottom:0;width:90px;height:45px;border-radius:90px 90px 0 0;background:#1556C2}
-body.ls::after{content:"";position:fixed;right:0;top:0;width:70px;height:70px;border-bottom-left-radius:100%;background:#FFC20E}
-body.ls .isplayer{width:100%!important;height:100vh!important}
-body.ls .pl{flex-direction:row!important}
-body.ls .ps{width:56%;height:100%!important;flex:none!important}
-body.ls .pc{left:10px!important;top:60px!important;width:214px!important;height:214px!important}
-body.ls .pf{left:14px!important;top:62px!important;width:210px!important;height:210px!important}
-body.ls .pf svg{width:210px;height:210px}
-body.ls .pw,body.ls .pb{display:none!important}
-body.ls .pt{left:240px!important;right:14px!important;top:84px!important;bottom:auto!important}
-body.ls .pt h1{font-size:32px!important}
-body.ls .pr{left:0!important;right:auto!important;width:236px;top:96px!important}
-body.ls .pcn{padding:10px 12px!important}
+body.wide::before{content:"";z-index:-1;position:fixed;left:0;bottom:0;width:18vh;height:9vh;border-radius:18vh 18vh 0 0;background:#1556C2}
+body.wide::after{content:"";z-index:-1;position:fixed;right:0;top:0;width:14vh;height:14vh;border-bottom-left-radius:100%;background:#FFC20E}
+body.wide #dc-root>div{width:844px!important;height:390px!important}
+body.wide .nav{flex-direction:column!important;top:8px!important}
+/* check-in */
+body.wide .ck-red{width:200px!important;height:200px!important;right:-90px!important;top:-110px!important}
+body.wide .ck-word{width:80px;height:19px;right:14px!important;top:16px!important}
+body.wide .ck-yel{width:50px!important;height:50px!important;right:auto!important;left:378px!important;top:24px!important}
+body.wide .ck-ring{right:auto!important;left:372px!important;top:206px!important}
+body.wide .ck-h1{left:80px!important;top:22px!important;transform:scale(.7);transform-origin:0 0}
+body.wide .ck-time{left:432px!important;right:24px!important;top:88px!important}
+body.wide .ck-energy{left:432px!important;right:24px!important;top:186px!important}
+body.wide .ck-mood{left:432px!important;right:auto!important;top:294px!important}
+body.wide .ck-go{left:110px!important;width:260px!important;height:130px!important;border-radius:130px 130px 0 0!important;padding-bottom:24px!important}
+body.wide .ck-go span:first-child{font-size:46px!important}
+body.wide .ck-pet{left:192px!important;top:202px!important}
+/* session */
+body.wide .ss{flex-direction:row!important}
+body.wide .ss-head{width:380px;height:100%!important}
+body.wide .ss-h1{top:96px!important}
+body.wide .ss-sum{top:176px!important}
+body.wide .ss .scroll{padding-bottom:150px!important}
+body.wide .ss-start{left:502px!important;width:240px!important;height:120px!important;border-radius:120px 120px 0 0!important;padding-bottom:22px!important}
+/* player */
+body.wide .pl{flex-direction:row!important}
+body.wide .ps{width:56%;height:100%!important;flex:none!important}
+body.wide .pc{left:10px!important;top:60px!important;width:214px!important;height:214px!important}
+body.wide .pf{left:14px!important;top:62px!important;width:210px!important;height:210px!important}
+body.wide .pf svg{width:210px;height:210px}
+body.wide .pw,body.wide .pb{display:none!important}
+body.wide .pt{left:240px!important;right:14px!important;top:84px!important;bottom:auto!important}
+body.wide .pt h1{font-size:32px!important}
+body.wide .pr{left:0!important;right:auto!important;width:236px;top:96px!important}
+body.wide .pr svg{width:216px;height:128px}
+body.wide .pcn{padding:10px 12px!important}
+/* done */
+body.wide .dn-hop{right:auto!important;width:422px;top:60px!important}
+body.wide .dn-h1{left:430px!important;top:100px!important}
+body.wide .dn-p{left:430px!important;top:250px!important}
+body.wide .dn-home{left:61px!important}
+body.wide .confetti{translate:0 -330px}
+body.wide .confetti:nth-child(odd){translate:440px 0}
+/* tabs */
+body.wide .tb-h1{left:84px!important;top:22px!important}
+body.wide .pa-sub{left:84px!important;right:auto!important;width:320px;top:84px!important}
+body.wide .pa-ban{left:84px!important;right:auto!important;width:320px;top:150px!important}
+body.wide .pa-nudge{left:84px!important;right:auto!important;width:320px}
+body.wide .pa-grid{left:456px!important;top:8px!important;scale:.74;transform-origin:0 0}
+body.wide .pd{display:grid!important;grid-template-columns:380px 1fr;grid-template-rows:1fr auto}
+body.wide .pd-head{grid-row:1/3;height:100%!important}
+body.wide .pd-head h1{top:150px!important}body.wide .pd-head p:first-of-type{top:132px!important}body.wide .pd-head p:last-of-type{top:208px!important}
+body.wide .pd-ol{padding-top:14px!important}
+body.wide .pd-li{height:54px!important}
+body.wide .pd-btns{padding-bottom:16px!important}
+body.wide .mc{flex-direction:row!important}
+body.wide .mc-stage{width:420px;height:100%!important}
+body.wide .ex-search{left:84px!important;right:auto!important;width:320px;top:90px!important}
+body.wide .ex-scroll{left:430px!important;top:0!important;padding-top:20px!important}
+body.wide .yo-scroll{left:430px!important;top:0!important;padding-top:20px!important}
 </style>
 </head>
 <body>
@@ -131,20 +173,20 @@ body.ls .pcn{padding:10px 12px!important}
 <!-- ============ CHECK-IN ============ -->
 <sc-if value="{{isCheckin}}" hint-placeholder-val="{{ true }}">
 <div class="{{checkinClass}}" style="position: absolute; inset: 0">
-  <div class="a-pop" aria-hidden="true" style="position: absolute; width: 300px; height: 300px; border-radius: 50%; background: #E5282E; right: -96px; top: -112px"></div>
-  <div class="a-spin d3" aria-hidden="true" style="position: absolute; width: 74px; height: 74px; border-top-right-radius: 100%; background: #FFC20E; right: 26px; top: 168px"></div>
-  <div class="a-pop d4" aria-hidden="true" style="position: absolute; width: 40px; height: 40px; border-radius: 50%; border: 9px solid #0B7A3E; box-sizing: border-box; right: 112px; top: 210px"></div>
+  <div class="a-pop ck-red" aria-hidden="true" style="position: absolute; width: 300px; height: 300px; border-radius: 50%; background: #E5282E; right: -96px; top: -112px"></div>
+  <div class="a-spin d3 ck-yel" aria-hidden="true" style="position: absolute; width: 74px; height: 74px; border-top-right-radius: 100%; background: #FFC20E; right: 26px; top: 168px"></div>
+  <div class="a-pop d4 ck-ring" aria-hidden="true" style="position: absolute; width: 40px; height: 40px; border-radius: 50%; border: 9px solid #0B7A3E; box-sizing: border-box; right: 112px; top: 210px"></div>
 
-  <svg class="a-up d2" width="100" height="24" viewBox="0 0 150 36" role="img" aria-label="Noodle" style="position: absolute; right: 22px; top: 28px"><path d="M0 36 V13 a11 11 0 0 1 22 0 V36 h-7 V13 a4 4 0 0 0 -8 0 V36 z" fill="#FFFFFF"/><circle cx="39" cy="24" r="8.5" fill="none" stroke="#FFFFFF" stroke-width="7"/><circle cx="68" cy="24" r="12" fill="#FFFFFF"/><circle cx="97" cy="24" r="8.5" fill="none" stroke="#FFFFFF" stroke-width="7"/><rect x="102" y="0" width="7" height="36" rx="3.5" fill="#FFFFFF"/><rect x="114" y="0" width="7" height="36" rx="3.5" fill="#FFFFFF"/><path d="M129.5 24 H146.5 A8.5 8.5 0 1 0 144 30" fill="none" stroke="#FFFFFF" stroke-width="7"/></svg>
+  <svg class="a-up d2 ck-word" width="100" height="24" viewBox="0 0 150 36" role="img" aria-label="Noodle" style="position: absolute; right: 22px; top: 28px"><path d="M0 36 V13 a11 11 0 0 1 22 0 V36 h-7 V13 a4 4 0 0 0 -8 0 V36 z" fill="#FFFFFF"/><circle cx="39" cy="24" r="8.5" fill="none" stroke="#FFFFFF" stroke-width="7"/><circle cx="68" cy="24" r="12" fill="#FFFFFF"/><circle cx="97" cy="24" r="8.5" fill="none" stroke="#FFFFFF" stroke-width="7"/><rect x="102" y="0" width="7" height="36" rx="3.5" fill="#FFFFFF"/><rect x="114" y="0" width="7" height="36" rx="3.5" fill="#FFFFFF"/><path d="M129.5 24 H146.5 A8.5 8.5 0 1 0 144 30" fill="none" stroke="#FFFFFF" stroke-width="7"/></svg>
 
-  <nav aria-label="Main" style="position: absolute; left: 8px; top: 10px; display: flex; gap: 2px; z-index: 5">
+  <nav class="nav" aria-label="Main" style="position: absolute; left: 8px; top: 10px; display: flex; gap: 2px; z-index: 5">
     <button onClick="{{navHome}}" aria-current="page" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #161616"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 26px; height: 13px; border-radius: 13px 13px 0 0; background: #1556C2; margin-top: 9px"></span></span><span style="border-bottom: 2px solid #161616; padding-bottom: 1px">Move</span></button>
     <button onClick="{{navPaths}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="22" height="22" fill="#161616"/><rect x="1.5" y="1.5" width="11" height="11" fill="#E5282E"/><rect x="14" y="1.5" width="6.5" height="6" fill="#FFFFFF"/><rect x="14" y="9" width="6.5" height="3.5" fill="#FFC20E"/><rect x="1.5" y="14" width="6" height="6.5" fill="#1556C2"/><rect x="9" y="14" width="11.5" height="6.5" fill="#FFFFFF"/></svg></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Paths</span></button>
     <button onClick="{{navExplore}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 22px; height: 22px; border-radius: 50%; border: 6px solid #0B7A3E; box-sizing: border-box"></span></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Explore</span></button>
     <button onClick="{{navYou}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 22px; height: 22px; border-radius: 0 0 11px 11px; background: #F6A5A9"></span></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">You</span></button>
   </nav>
 
-  <h1 style="position: absolute; left: 20px; top: 84px; margin: 0; width: 300px">
+  <h1 class="ck-h1" style="position: absolute; left: 20px; top: 84px; margin: 0; width: 300px">
    <button class="a-up d1" onClick="{{nextPhrase}}" aria-label="{{phraseAria}}" style="{{phraseStyle}}">
     <sc-if value="{{phEven}}" hint-placeholder-val="{{ true }}">
       <span class="phrase" style="display: block">
@@ -159,7 +201,7 @@ body.ls .pcn{padding:10px 12px!important}
    </button>
   </h1>
 
-  <section class="a-in d2" aria-labelledby="p-time" style="position: absolute; left: 20px; right: 20px; top: 282px; display: flex; gap: 16px">
+  <section class="a-in d2 ck-time" aria-labelledby="p-time" style="position: absolute; left: 20px; right: 20px; top: 282px; display: flex; gap: 16px">
     <h2 id="p-time" style="margin: 0; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #595959">Time</h2>
     <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
       <div style="display: flex; align-items: center; justify-content: space-between; height: 58px">
@@ -173,7 +215,7 @@ body.ls .pcn{padding:10px 12px!important}
     </div>
   </section>
 
-  <section class="a-in d3" aria-labelledby="p-energy" style="position: absolute; left: 20px; right: 20px; top: 398px; display: flex; gap: 16px">
+  <section class="a-in d3 ck-energy" aria-labelledby="p-energy" style="position: absolute; left: 20px; right: 20px; top: 398px; display: flex; gap: 16px">
     <h2 id="p-energy" style="margin: 0; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #595959">Energy</h2>
     <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
       <div style="display: flex; align-items: center; justify-content: space-between; height: 58px">
@@ -187,7 +229,7 @@ body.ls .pcn{padding:10px 12px!important}
     </div>
   </section>
 
-  <section class="a-in d4" aria-labelledby="p-mood" style="position: absolute; left: 20px; right: 12px; top: 520px; display: flex; align-items: flex-end; gap: 10px">
+  <section class="a-in d4 ck-mood" aria-labelledby="p-mood" style="position: absolute; left: 20px; right: 12px; top: 520px; display: flex; align-items: flex-end; gap: 10px">
     <h2 id="p-mood" style="margin: 0; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #595959">Mood</h2>
     <div style="display: flex; align-items: flex-end; gap: 2px">
       <sc-for list="{{moods}}" as="m" hint-placeholder-count="5">
@@ -200,11 +242,11 @@ body.ls .pcn{padding:10px 12px!important}
     </div>
   </section>
 
-  <button class="a-rise d5 half" onClick="{{go}}" style="position: absolute; left: 45px; bottom: -1px; width: 300px; height: 150px; border: 0; border-radius: 150px 150px 0 0; background: #1556C2; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 0 34px; box-sizing: border-box; font-family: Inter Tight, sans-serif">
+  <button class="a-rise d5 half ck-go" onClick="{{go}}" style="position: absolute; left: 45px; bottom: -1px; width: 300px; height: 150px; border: 0; border-radius: 150px 150px 0 0; background: #1556C2; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 0 34px; box-sizing: border-box; font-family: Inter Tight, sans-serif">
     <span style="font-size: 56px; font-weight: 900; line-height: .9; letter-spacing: -.03em">GO</span>
     <span style="font-size: 13px; font-weight: 600; margin-top: 4px; color: #DDE7FA">build my session</span>
   </button>
-  <button class="pet" onClick="{{petHome}}" aria-label="Pet Noodle" style="position: absolute; left: 147px; top: 640px; width: 96px; height: 62px">
+  <button class="pet ck-pet" onClick="{{petHome}}" aria-label="Pet Noodle" style="position: absolute; left: 147px; top: 640px; width: 96px; height: 62px">
    <span style="{{petWiggle}}">
    <svg class="a-peek" width="96" height="62" viewBox="0 0 100 64" aria-hidden="true" style="display: block; overflow: visible">
     <ellipse cx="27" cy="34" rx="8" ry="16" fill="#161616" style="{{earL}}"/>
@@ -228,8 +270,8 @@ body.ls .pcn{padding:10px 12px!important}
 
 <!-- ============ SESSION ============ -->
 <sc-if value="{{isSession}}" hint-placeholder-val="{{ false }}">
-<div class="a-screen" style="position: absolute; inset: 0; display: flex; flex-direction: column">
-  <header style="position: relative; height: 262px; flex: none; background: #1556C2; color: #FFFFFF; overflow: hidden">
+<div class="a-screen ss" style="position: absolute; inset: 0; display: flex; flex-direction: column">
+  <header class="ss-head" style="position: relative; height: 262px; flex: none; background: #1556C2; color: #FFFFFF; overflow: hidden">
     <div class="a-spin d2" aria-hidden="true" style="position: absolute; width: 130px; height: 130px; border-top-left-radius: 100%; background: #FFC20E; right: 0; bottom: 0"></div>
     <div class="a-pop d3" aria-hidden="true" style="position: absolute; width: 64px; height: 32px; border-radius: 32px 32px 0 0; background: #F6A5A9; right: 120px; top: 64px"></div>
     <div class="a-pop d4" aria-hidden="true" style="position: absolute; width: 22px; height: 22px; border-radius: 50%; background: #E5282E; right: 40px; top: 70px"></div>
@@ -237,8 +279,8 @@ body.ls .pcn{padding:10px 12px!important}
       <button onClick="{{home}}" aria-label="Back to check-in" style="width: 44px; height: 44px; border-radius: 50%; border: 0; background: #FFFFFF; color: #161616; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
       <button onClick="{{shuffle}}" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 0; background: #FFFFFF; color: #161616; font: 700 14px Inter Tight, sans-serif; display: flex; align-items: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h4c4 0 6 10 10 10h4M3 17h4c1.5 0 2.7-1.4 3.7-3M14 9.8C15 8.3 16 7 17 7h4M18 4l3 3-3 3M18 14l3 3-3 3"/></svg>Shuffle</button>
     </div>
-    <h1 class="a-up d1" style="position: absolute; left: 20px; top: 74px; margin: 0; font-size: 80px; font-weight: 900; line-height: .85; letter-spacing: -.04em">{{time}}<span style="font-size: 30px; letter-spacing: 0"> MIN</span></h1>
-    <p class="a-up d2" style="position: absolute; left: 22px; top: 150px; margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; color: #DDE7FA">{{summary}}</p>
+    <h1 class="a-up d1 ss-h1" style="position: absolute; left: 20px; top: 74px; margin: 0; font-size: 80px; font-weight: 900; line-height: .85; letter-spacing: -.04em">{{time}}<span style="font-size: 30px; letter-spacing: 0"> MIN</span></h1>
+    <p class="a-up d2 ss-sum" style="position: absolute; left: 22px; top: 150px; margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; color: #DDE7FA">{{summary}}</p>
     <div class="walker" style="left: 0; bottom: -2px">
       <button class="pet" onClick="{{pet}}" aria-label="Pet Noodle" style="{{petStyle}}">
       <svg class="walking" width="140" height="83" viewBox="0 0 220 130" aria-hidden="true">
@@ -284,7 +326,7 @@ body.ls .pcn{padding:10px 12px!important}
     </sc-for>
   </div>
 
-  <button class="a-rise d4 half" onClick="{{startAll}}" style="position: absolute; left: 65px; bottom: -1px; width: 260px; height: 130px; border: 0; border-radius: 130px 130px 0 0; background: #161616; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 0 30px; box-sizing: border-box; font-family: Inter Tight, sans-serif">
+  <button class="a-rise d4 half ss-start" onClick="{{startAll}}" style="position: absolute; left: 65px; bottom: -1px; width: 260px; height: 130px; border: 0; border-radius: 130px 130px 0 0; background: #161616; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 0 30px; box-sizing: border-box; font-family: Inter Tight, sans-serif">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFC20E" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>
     <span style="font-size: 40px; font-weight: 900; line-height: .9; letter-spacing: -.02em; margin-top: 4px">START</span>
   </button>
@@ -369,7 +411,7 @@ body.ls .pcn{padding:10px 12px!important}
 <sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
 <div class="a-screen" style="position: absolute; inset: 0">
   <sc-for list="{{confetti}}" as="c" hint-placeholder-count="14"><span class="confetti" aria-hidden="true" style="{{c.style}}"></span></sc-for>
-  <div style="position: absolute; left: 0; right: 0; top: 190px; display: flex; justify-content: center">
+  <div class="dn-hop" style="position: absolute; left: 0; right: 0; top: 190px; display: flex; justify-content: center">
     <svg class="hopper" width="230" height="136" viewBox="0 0 220 130" role="img" aria-label="Noodle jumping to celebrate">
       <path class="n-tail" d="M44 74 L14 64 L46 62 Z" fill="#161616"/>
       <rect x="44" y="84" width="12" height="34" rx="6" fill="#161616" transform="rotate(40 50 86)"/>
@@ -386,9 +428,9 @@ body.ls .pcn{padding:10px 12px!important}
       <circle cx="188" cy="31" r="3.5" fill="#161616"/>
     </svg>
   </div>
-  <h1 class="a-up d2" style="position: absolute; left: 20px; right: 20px; top: 380px; margin: 0; text-align: center; font-size: 72px; font-weight: 900; line-height: .86; letter-spacing: -.04em; text-transform: uppercase">Nice<br>work!</h1>
-  <p class="a-up d3" style="position: absolute; left: 20px; right: 20px; top: 520px; margin: 0; text-align: center; font-size: 13px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; color: #595959">{{doneSummary}}</p>
-  <button class="a-rise d4 half" onClick="{{home}}" style="position: absolute; left: 45px; bottom: -1px; width: 300px; height: 150px; border: 0; border-radius: 150px 150px 0 0; background: #1556C2; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 0 38px; box-sizing: border-box; font-family: Inter Tight, sans-serif">
+  <h1 class="a-up d2 dn-h1" style="position: absolute; left: 20px; right: 20px; top: 380px; margin: 0; text-align: center; font-size: 72px; font-weight: 900; line-height: .86; letter-spacing: -.04em; text-transform: uppercase">Nice<br>work!</h1>
+  <p class="a-up d3 dn-p" style="position: absolute; left: 20px; right: 20px; top: 520px; margin: 0; text-align: center; font-size: 13px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; color: #595959">{{doneSummary}}</p>
+  <button class="a-rise d4 half dn-home" onClick="{{home}}" style="position: absolute; left: 45px; bottom: -1px; width: 300px; height: 150px; border: 0; border-radius: 150px 150px 0 0; background: #1556C2; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 0 38px; box-sizing: border-box; font-family: Inter Tight, sans-serif">
     <span style="font-size: 40px; font-weight: 900; line-height: .9; letter-spacing: -.02em">HOME</span>
   </button>
 </div>
@@ -397,27 +439,27 @@ body.ls .pcn{padding:10px 12px!important}
 <!-- ============ PATHS ============ -->
 <sc-if value="{{isPaths}}" hint-placeholder-val="{{ false }}">
 <div class="{{tabClass}}" style="position: absolute; inset: 0">
-  <nav aria-label="Main" style="position: absolute; left: 8px; top: 10px; display: flex; gap: 2px; z-index: 5">
+  <nav class="nav" aria-label="Main" style="position: absolute; left: 8px; top: 10px; display: flex; gap: 2px; z-index: 5">
     <button onClick="{{navHome}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 26px; height: 13px; border-radius: 13px 13px 0 0; background: #1556C2; margin-top: 9px"></span></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Move</span></button>
     <button onClick="{{navPaths}}" aria-current="page" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #161616"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="22" height="22" fill="#161616"/><rect x="1.5" y="1.5" width="11" height="11" fill="#E5282E"/><rect x="14" y="1.5" width="6.5" height="6" fill="#FFFFFF"/><rect x="14" y="9" width="6.5" height="3.5" fill="#FFC20E"/><rect x="1.5" y="14" width="6" height="6.5" fill="#1556C2"/><rect x="9" y="14" width="11.5" height="6.5" fill="#FFFFFF"/></svg></span><span style="border-bottom: 2px solid #161616; padding-bottom: 1px">Paths</span></button>
     <button onClick="{{navExplore}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 22px; height: 22px; border-radius: 50%; border: 6px solid #0B7A3E; box-sizing: border-box"></span></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Explore</span></button>
     <button onClick="{{navYou}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 22px; height: 22px; border-radius: 0 0 11px 11px; background: #F6A5A9"></span></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">You</span></button>
   </nav>
-  <h1 class="a-up d1" style="position: absolute; left: 20px; top: 76px; margin: 0; font-size: 56px; font-weight: 900; line-height: .9; letter-spacing: -.045em">Paths</h1>
-  <p class="a-up d2" style="position: absolute; left: 20px; right: 20px; top: 132px; margin: 0; font-size: 14px; line-height: 1.35; color: #595959">{{pathsSub}}</p>
-  <sc-if value="{{hasBanner}}" hint-placeholder-val="{{ false }}"><button class="a-pop" onClick="{{bannerGo}}" style="position: absolute; left: 20px; right: 20px; top: 124px; height: 54px; z-index: 3; border: 0; background: #161616; color: #FFFFFF; display: flex; align-items: center; gap: 12px; padding: 0 14px; font: 800 15px Inter Tight, sans-serif; text-align: left"><span style="{{bannerShape}}"></span><span style="flex: 1">{{bannerText}}</span><span style="font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #FFC20E">See it</span></button></sc-if>
-  <div class="a-up d2" style="position: absolute; left: 17px; top: 186px; width: 350px; height: 470px; background: #161616; border: 3px solid #161616">
+  <h1 class="a-up d1 tb-h1" style="position: absolute; left: 20px; top: 76px; margin: 0; font-size: 56px; font-weight: 900; line-height: .9; letter-spacing: -.045em">Paths</h1>
+  <p class="a-up d2 pa-sub" style="position: absolute; left: 20px; right: 20px; top: 132px; margin: 0; font-size: 14px; line-height: 1.35; color: #595959">{{pathsSub}}</p>
+  <sc-if value="{{hasBanner}}" hint-placeholder-val="{{ false }}"><button class="a-pop pa-ban" onClick="{{bannerGo}}" style="position: absolute; left: 20px; right: 20px; top: 124px; height: 54px; z-index: 3; border: 0; background: #161616; color: #FFFFFF; display: flex; align-items: center; gap: 12px; padding: 0 14px; font: 800 15px Inter Tight, sans-serif; text-align: left"><span style="{{bannerShape}}"></span><span style="flex: 1">{{bannerText}}</span><span style="font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #FFC20E">See it</span></button></sc-if>
+  <div class="a-up d2 pa-grid" style="position: absolute; left: 17px; top: 186px; width: 350px; height: 470px; background: #161616; border: 3px solid #161616">
     <sc-for list="{{cells}}" as="c" hint-placeholder-count="11">
       <button onClick="{{c.open}}" aria-label="{{c.aria}}" style="{{c.box}}"><span style="{{c.fill}}"></span><span style="{{c.shape}}"></span><span style="{{c.label}}">{{c.name}}</span><span style="{{c.lvl}}">{{c.lvlName}}</span></button>
     </sc-for>
   </div>
-  <div class="a-up d4" style="position: absolute; left: 20px; right: 20px; bottom: 18px; display: flex; align-items: center; gap: 12px; border-top: 3px solid #161616; padding-top: 12px">
+  <div class="a-up d4 pa-nudge" style="position: absolute; left: 20px; right: 20px; bottom: 18px; display: flex; align-items: center; gap: 12px; border-top: 3px solid #161616; padding-top: 12px">
     <svg width="54" height="35" viewBox="0 0 100 66" aria-hidden="true" style="flex: none"><ellipse cx="27" cy="36" rx="8" ry="16" fill="#161616"/><ellipse cx="73" cy="36" rx="8" ry="16" fill="#161616"/><circle cx="50" cy="32" r="24" fill="#E5282E"/><ellipse cx="50" cy="44" rx="12" ry="9" fill="#FFC20E"/><circle cx="50" cy="39" r="4.5" fill="#161616"/><circle cx="41" cy="27" r="3.5" fill="#161616"/><circle cx="59" cy="27" r="3.5" fill="#161616"/></svg>
     <p style="flex: 1; margin: 0; font-size: 14px; font-weight: 600; line-height: 1.3">{{nudgeText}}</p>
   </div>
   <sc-if value="{{pathIsOpen}}" hint-placeholder-val="{{ false }}">
-  <div class="zoomIn" style="position: absolute; inset: 0; z-index: 10; background: #FFFFFF; display: flex; flex-direction: column">
-    <header style="{{pdHead}}">
+  <div class="zoomIn pd" style="position: absolute; inset: 0; z-index: 10; background: #FFFFFF; display: flex; flex-direction: column">
+    <header class="pd-head" style="{{pdHead}}">
       <span aria-hidden="true" style="{{pdBigShape}}"></span>
       <button onClick="{{closePath}}" aria-label="Back to all paths" style="position: absolute; left: 12px; top: 12px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: #FFFFFF; color: #161616; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
       <p style="position: absolute; left: 20px; top: 96px; margin: 0; font-size: 11px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; opacity: .8">Path</p>
@@ -425,16 +467,16 @@ body.ls .pcn{padding:10px 12px!important}
       <p style="position: absolute; left: 20px; top: 172px; margin: 0; font-size: 15px; font-weight: 700">{{pd.lvlName}}</p>
       <sc-if value="{{celebrate}}" hint-placeholder-val="{{ false }}"><span class="levelup" style="position: absolute; right: 22px; top: 70px; background: #FFFFFF; color: #161616; font: 900 22px Inter Tight, sans-serif; padding: 8px 14px; box-shadow: 0 0 0 3px #161616">LEVEL UP!</span></sc-if>
     </header>
-    <ol style="list-style: none; margin: 0; padding: 22px 20px 0; flex: 1">
+    <ol class="pd-ol" style="list-style: none; margin: 0; padding: 22px 20px 0; flex: 1">
       <sc-for list="{{pdSteps}}" as="st" hint-placeholder-count="5">
-        <li style="position: relative; display: flex; align-items: center; gap: 16px; height: 66px">
+        <li class="pd-li" style="position: relative; display: flex; align-items: center; gap: 16px; height: 66px">
           <span aria-hidden="true" style="{{st.line}}"></span><span aria-hidden="true" style="{{st.dot}}"></span>
           <span style="{{st.text}}">{{st.n}}</span>
           <sc-if value="{{st.here}}" hint-placeholder-val="{{ false }}"><span style="margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase"><svg width="44" height="29" viewBox="0 0 100 66" aria-hidden="true" class="hopper"><ellipse cx="27" cy="36" rx="8" ry="16" fill="#161616"/><ellipse cx="73" cy="36" rx="8" ry="16" fill="#161616"/><circle cx="50" cy="32" r="24" fill="#E5282E"/><ellipse cx="50" cy="44" rx="12" ry="9" fill="#FFC20E"/><circle cx="50" cy="39" r="4.5" fill="#161616"/><circle cx="41" cy="27" r="3.5" fill="#161616"/><circle cx="59" cy="27" r="3.5" fill="#161616"/></svg>You</span></sc-if>
         </li>
       </sc-for>
     </ol>
-    <div style="display: flex; gap: 10px; padding: 0 20px 24px">
+    <div class="pd-btns" style="display: flex; gap: 10px; padding: 0 20px 24px">
       <button onClick="{{pdEasier}}" style="flex: 1; height: 54px; border: 3px solid #161616; background: #FFFFFF; font: 800 15px Inter Tight, sans-serif; color: #161616">Too hard</button>
       <button onClick="{{pdNext}}" style="flex: 2; height: 54px; border: 0; background: #161616; color: #FFFFFF; font: 800 15px Inter Tight, sans-serif">{{pdNextLabel}}</button>
     </div>
@@ -445,8 +487,8 @@ body.ls .pcn{padding:10px 12px!important}
 
 <!-- ============ MOVE CARD ============ -->
 <sc-if value="{{isMove}}" hint-placeholder-val="{{ false }}">
-<div class="a-screen" style="position: absolute; inset: 0; display: flex; flex-direction: column">
-  <div style="{{mvStage}}">
+<div class="a-screen mc" style="position: absolute; inset: 0; display: flex; flex-direction: column">
+  <div class="mc-stage" style="{{mvStage}}">
     <div aria-hidden="true" style="position: absolute; width: 230px; height: 230px; border-radius: 50%; background: #FFFFFF; left: 80px; top: 40px"></div>
     <button onClick="{{closeMove}}" aria-label="Back" style="position: absolute; left: 12px; top: 12px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: #FFFFFF; color: #161616; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
     <div style="position: absolute; left: 90px; top: 50px; width: 210px; height: 210px"><svg width="210" height="210" viewBox="0 0 100 100" role="img" aria-label="{{mfg.aria}}" style="display: block; overflow: visible"><line x1="4" y1="90.5" x2="96" y2="90.5" stroke="#D9D9D9" stroke-width="2.4" stroke-linecap="round"/><line x1="{{mfg.wx}}" y1="6" x2="{{mfg.wx}}" y2="90.5" stroke="#CFCFCF" stroke-width="2.4" opacity="{{mfg.wo}}"/><rect x="{{mfg.bx}}" y="{{mfg.by}}" width="{{mfg.bw}}" height="{{mfg.bh}}" rx="2" fill="#F0F0F0" stroke="#CFCFCF" stroke-width="1.6" opacity="{{mfg.bo}}"/><line x1="{{mfg.rx1}}" y1="{{mfg.ry}}" x2="{{mfg.rx2}}" y2="{{mfg.ry}}" stroke="#8A8A8A" stroke-width="3" stroke-linecap="round" opacity="{{mfg.ro}}"/><line x1="{{mfg.s0.x1}}" y1="{{mfg.s0.y1}}" x2="{{mfg.s0.x2}}" y2="{{mfg.s0.y2}}" stroke="{{mfg.s0.c}}" stroke-width="{{mfg.s0.w}}" stroke-linecap="round"><animate attributeName="x1" values="{{mfg.s0.ax1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y1" values="{{mfg.s0.ay1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="x2" values="{{mfg.s0.ax2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y2" values="{{mfg.s0.ay2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></line><line x1="{{mfg.s1.x1}}" y1="{{mfg.s1.y1}}" x2="{{mfg.s1.x2}}" y2="{{mfg.s1.y2}}" stroke="{{mfg.s1.c}}" stroke-width="{{mfg.s1.w}}" stroke-linecap="round"><animate attributeName="x1" values="{{mfg.s1.ax1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y1" values="{{mfg.s1.ay1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="x2" values="{{mfg.s1.ax2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y2" values="{{mfg.s1.ay2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></line><line x1="{{mfg.s2.x1}}" y1="{{mfg.s2.y1}}" x2="{{mfg.s2.x2}}" y2="{{mfg.s2.y2}}" stroke="{{mfg.s2.c}}" stroke-width="{{mfg.s2.w}}" stroke-linecap="round"><animate attributeName="x1" values="{{mfg.s2.ax1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y1" values="{{mfg.s2.ay1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="x2" values="{{mfg.s2.ax2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y2" values="{{mfg.s2.ay2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></line><line x1="{{mfg.s3.x1}}" y1="{{mfg.s3.y1}}" x2="{{mfg.s3.x2}}" y2="{{mfg.s3.y2}}" stroke="{{mfg.s3.c}}" stroke-width="{{mfg.s3.w}}" stroke-linecap="round"><animate attributeName="x1" values="{{mfg.s3.ax1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y1" values="{{mfg.s3.ay1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="x2" values="{{mfg.s3.ax2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y2" values="{{mfg.s3.ay2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></line><line x1="{{mfg.s4.x1}}" y1="{{mfg.s4.y1}}" x2="{{mfg.s4.x2}}" y2="{{mfg.s4.y2}}" stroke="{{mfg.s4.c}}" stroke-width="{{mfg.s4.w}}" stroke-linecap="round"><animate attributeName="x1" values="{{mfg.s4.ax1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y1" values="{{mfg.s4.ay1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="x2" values="{{mfg.s4.ax2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y2" values="{{mfg.s4.ay2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></line><line x1="{{mfg.s5.x1}}" y1="{{mfg.s5.y1}}" x2="{{mfg.s5.x2}}" y2="{{mfg.s5.y2}}" stroke="{{mfg.s5.c}}" stroke-width="{{mfg.s5.w}}" stroke-linecap="round"><animate attributeName="x1" values="{{mfg.s5.ax1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y1" values="{{mfg.s5.ay1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="x2" values="{{mfg.s5.ax2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y2" values="{{mfg.s5.ay2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></line><line x1="{{mfg.s6.x1}}" y1="{{mfg.s6.y1}}" x2="{{mfg.s6.x2}}" y2="{{mfg.s6.y2}}" stroke="{{mfg.s6.c}}" stroke-width="{{mfg.s6.w}}" stroke-linecap="round"><animate attributeName="x1" values="{{mfg.s6.ax1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y1" values="{{mfg.s6.ay1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="x2" values="{{mfg.s6.ax2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y2" values="{{mfg.s6.ay2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></line><line x1="{{mfg.s7.x1}}" y1="{{mfg.s7.y1}}" x2="{{mfg.s7.x2}}" y2="{{mfg.s7.y2}}" stroke="{{mfg.s7.c}}" stroke-width="{{mfg.s7.w}}" stroke-linecap="round"><animate attributeName="x1" values="{{mfg.s7.ax1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y1" values="{{mfg.s7.ay1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="x2" values="{{mfg.s7.ax2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y2" values="{{mfg.s7.ay2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></line><line x1="{{mfg.s8.x1}}" y1="{{mfg.s8.y1}}" x2="{{mfg.s8.x2}}" y2="{{mfg.s8.y2}}" stroke="{{mfg.s8.c}}" stroke-width="{{mfg.s8.w}}" stroke-linecap="round"><animate attributeName="x1" values="{{mfg.s8.ax1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y1" values="{{mfg.s8.ay1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="x2" values="{{mfg.s8.ax2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y2" values="{{mfg.s8.ay2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></line><line x1="{{mfg.s9.x1}}" y1="{{mfg.s9.y1}}" x2="{{mfg.s9.x2}}" y2="{{mfg.s9.y2}}" stroke="{{mfg.s9.c}}" stroke-width="{{mfg.s9.w}}" stroke-linecap="round"><animate attributeName="x1" values="{{mfg.s9.ax1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y1" values="{{mfg.s9.ay1}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="x2" values="{{mfg.s9.ax2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="y2" values="{{mfg.s9.ay2}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></line><circle cx="{{mfg.hx}}" cy="{{mfg.hy}}" r="6.5" fill="#161616"><animate attributeName="cx" values="{{mfg.ahx}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="cy" values="{{mfg.ahy}}" dur="{{mfg.dur}}" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></circle></svg></div>
@@ -478,18 +520,18 @@ body.ls .pcn{padding:10px 12px!important}
 <!-- ============ EXPLORE ============ -->
 <sc-if value="{{isExplore}}" hint-placeholder-val="{{ false }}">
 <div class="{{tabClass}}" style="position: absolute; inset: 0">
-  <nav aria-label="Main" style="position: absolute; left: 8px; top: 10px; display: flex; gap: 2px; z-index: 5">
+  <nav class="nav" aria-label="Main" style="position: absolute; left: 8px; top: 10px; display: flex; gap: 2px; z-index: 5">
     <button onClick="{{navHome}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 26px; height: 13px; border-radius: 13px 13px 0 0; background: #1556C2; margin-top: 9px"></span></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Move</span></button>
     <button onClick="{{navPaths}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="22" height="22" fill="#161616"/><rect x="1.5" y="1.5" width="11" height="11" fill="#E5282E"/><rect x="14" y="1.5" width="6.5" height="6" fill="#FFFFFF"/><rect x="14" y="9" width="6.5" height="3.5" fill="#FFC20E"/><rect x="1.5" y="14" width="6" height="6.5" fill="#1556C2"/><rect x="9" y="14" width="11.5" height="6.5" fill="#FFFFFF"/></svg></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Paths</span></button>
     <button onClick="{{navExplore}}" aria-current="page" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #161616"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 22px; height: 22px; border-radius: 50%; border: 6px solid #0B7A3E; box-sizing: border-box"></span></span><span style="border-bottom: 2px solid #161616; padding-bottom: 1px">Explore</span></button>
     <button onClick="{{navYou}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 22px; height: 22px; border-radius: 0 0 11px 11px; background: #F6A5A9"></span></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">You</span></button>
   </nav>
-  <h1 class="a-up d1" style="position: absolute; left: 20px; top: 76px; margin: 0; font-size: 56px; font-weight: 900; line-height: .9; letter-spacing: -.045em">Explore</h1>
-  <label class="a-up d2" style="position: absolute; left: 20px; right: 20px; top: 140px">
+  <h1 class="a-up d1 tb-h1" style="position: absolute; left: 20px; top: 76px; margin: 0; font-size: 56px; font-weight: 900; line-height: .9; letter-spacing: -.045em">Explore</h1>
+  <label class="a-up d2 ex-search" style="position: absolute; left: 20px; right: 20px; top: 140px">
     <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search moves</span>
     <input type="search" value="{{query}}" onChange="{{onQuery}}" placeholder="Search moves, like hips or kick" style="width: 100%; box-sizing: border-box; height: 48px; border: 3px solid #161616; border-radius: 0; padding: 0 14px; font: 600 15px Inter Tight, sans-serif; color: #161616; background: #FFFFFF">
   </label>
-  <div class="scroll" style="position: absolute; left: 0; right: 0; top: 204px; bottom: 0; overflow-y: auto; padding: 0 20px 24px; scrollbar-width: none">
+  <div class="scroll ex-scroll" style="position: absolute; left: 0; right: 0; top: 204px; bottom: 0; overflow-y: auto; padding: 0 20px 24px; scrollbar-width: none">
     <sc-if value="{{hasQuery}}" hint-placeholder-val="{{ false }}">
       <h2 style="margin: 0; font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: #595959; margin-bottom: 6px">{{resultCount}}</h2>
       <sc-for list="{{results}}" as="r" hint-placeholder-count="4">
@@ -515,14 +557,14 @@ body.ls .pcn{padding:10px 12px!important}
 <!-- ============ YOU ============ -->
 <sc-if value="{{isYou}}" hint-placeholder-val="{{ false }}">
 <div class="{{tabClass}}" style="position: absolute; inset: 0">
-  <nav aria-label="Main" style="position: absolute; left: 8px; top: 10px; display: flex; gap: 2px; z-index: 5">
+  <nav class="nav" aria-label="Main" style="position: absolute; left: 8px; top: 10px; display: flex; gap: 2px; z-index: 5">
     <button onClick="{{navHome}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 26px; height: 13px; border-radius: 13px 13px 0 0; background: #1556C2; margin-top: 9px"></span></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Move</span></button>
     <button onClick="{{navPaths}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="22" height="22" fill="#161616"/><rect x="1.5" y="1.5" width="11" height="11" fill="#E5282E"/><rect x="14" y="1.5" width="6.5" height="6" fill="#FFFFFF"/><rect x="14" y="9" width="6.5" height="3.5" fill="#FFC20E"/><rect x="1.5" y="14" width="6" height="6.5" fill="#1556C2"/><rect x="9" y="14" width="11.5" height="6.5" fill="#FFFFFF"/></svg></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Paths</span></button>
     <button onClick="{{navExplore}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 22px; height: 22px; border-radius: 50%; border: 6px solid #0B7A3E; box-sizing: border-box"></span></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Explore</span></button>
     <button onClick="{{navYou}}" aria-current="page" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #161616"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 22px; height: 22px; border-radius: 0 0 11px 11px; background: #F6A5A9"></span></span><span style="border-bottom: 2px solid #161616; padding-bottom: 1px">You</span></button>
   </nav>
-  <h1 class="a-up d1" style="position: absolute; left: 20px; top: 76px; margin: 0; font-size: 56px; font-weight: 900; line-height: .9; letter-spacing: -.045em">You</h1>
-  <div class="scroll" style="position: absolute; left: 0; right: 0; top: 140px; bottom: 0; overflow-y: auto; padding: 0 20px 28px; scrollbar-width: none">
+  <h1 class="a-up d1 tb-h1" style="position: absolute; left: 20px; top: 76px; margin: 0; font-size: 56px; font-weight: 900; line-height: .9; letter-spacing: -.045em">You</h1>
+  <div class="scroll yo-scroll" style="position: absolute; left: 0; right: 0; top: 140px; bottom: 0; overflow-y: auto; padding: 0 20px 28px; scrollbar-width: none">
     <h2 style="margin: 0; font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: #595959">{{monthName}}</h2>
     <div style="margin-top: 8px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px">
       <sc-for list="{{dow}}" as="dw" hint-placeholder-count="7"><span style="font-size: 10px; font-weight: 800; letter-spacing: .1em; color: #595959; text-align: center">{{dw.t}}</span></sc-for>

@@ -677,7 +677,7 @@ class Component extends DCLogic {
       openEasier: () => this.setState({ moveOpen: mvEasier }),
       openHarder: () => this.setState({ moveOpen: mvHarder }),
       startAll: () => { this.ensureAudio(); this.beep(880, 0.2); this.transitionTo('player', '#161616', { idx: 0, remaining: per, paused: false, resting: false, askFb: false, fbMsg: '' }); },
-      rootClass: (s.calm ? 'calm ' : '') + (s.screen === 'player' ? 'isplayer' : ''),
+      rootClass: s.calm ? 'calm' : '',
       chatter: s.chatter,
       restLine: restLines[s.idx % restLines.length],
       showUpNext: !s.askFb && !s.fbMsg,
