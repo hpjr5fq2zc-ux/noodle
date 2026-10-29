@@ -71,7 +71,7 @@ window.bootNoodle = function (C) { window.__C = C; };
   function svgFor(name, k) {
     var f = C.figure(name, false);
     var dur = slow ? (parseFloat(f.dur) * 2.5) + 's' : f.dur;
-    var sp = 'calcMode="spline" keyTimes="0;0.5;1" keySplines=".45 0 .55 1;.45 0 .55 1" repeatCount="indefinite" dur="' + dur + '"';
+    var sp = 'calcMode="spline" keyTimes="' + f.kt + '" keySplines="' + f.ks + '" repeatCount="indefinite" dur="' + dur + '"';
     var o = '<svg viewBox="0 0 100 100" role="img" aria-label="' + f.aria + '">';
     o += '<line x1="4" y1="90.5" x2="96" y2="90.5" stroke="#D9D9D9" stroke-width="2.4" stroke-linecap="round"/>';
     if (f.wo) o += '<line x1="' + f.wx + '" y1="6" x2="' + f.wx + '" y2="90.5" stroke="#CFCFCF" stroke-width="2.4"/>';

@@ -387,7 +387,7 @@ class Component extends DCLogic {
       vup: [LY + ' P48,86 E10,84 W2,84 K68,86 F86,86 e10,84 w2,84 k68,86 f86,86', 'H34,62 N38,70 P50,84 E46,60 W58,52 K62,66 F70,52 e46,60 w58,52 k62,66 f70,52', 2],
       singleleg: ['H50,14 N50,23 P50,49 E40,34 W32,40 K49,69 F49,89 e60,34 w68,40 k58,58 f54,72', 'H51,14 N51,23', 3],
       march: [S, 'K56,58 F54,74 E44,36 W40,44 e58,38 w64,44', 1.2],
-      jog: ['H52,13 N52,22 P50,48 E47,34 W40,44 K69,53 F66,73 e63,28 w62,40 k50,68 f49,88', 'H52,13 N52,22 P50,48 E63,28 W62,40 K50,68 F49,88 e47,34 w40,44 k69,53 f66,73', 0.7],
+      jog: ['H52,12 N52,21 P50,47 E46,33 W40,43 K69,52 F66,72 e63,28 w62,40 k50,67 f49,87', 'H52,12 N52,21 P50,47 E63,28 W62,40 K50,67 F49,87 e46,33 w40,43 k69,52 f66,72', 0.7, null, 'H52,14 N51,23 P50,49 E54,36 W50,47 K56,68 F54,88 e55,35 w52,47 k53,69 f48,88'],
       frogstand: [FS, 'H27,72 N34,66 P54,52 K42,72 F62,76 k44,72 f64,76', 2.6],
       mountain: [PU, 'P54,70 K44,78 F50,86', 1],
       skater: [FR + ' E44,36 W40,46 e56,36 w60,46', 'H40,22 N41,31 P42,54 E34,40 W30,50 e50,40 w58,46 K34,70 F30,89 k54,72 f62,86', 1.6],
@@ -400,7 +400,7 @@ class Component extends DCLogic {
       knee: [JA, 'K58,46 F54,64 E60,44 W58,50', 1.2],
       roundkick: [JA, 'H42,18 N43,27 P47,50 K62,46 F82,40 E38,32 W32,36', 1.4],
       indianstep: [S, 'F64,84 K58,70 E42,36 W36,44 e58,36 w62,42', 0.9],
-      sixstep: ['H26,59 N34,63 P58,72 E34,76 W36,88 K38,69 F42,89 e36,76 w46,70 k78,69 f80,89', 'H26,59 N34,63 P58,72 E34,76 W36,88 K78,69 F76,89 e36,76 w46,70 k38,70 f44,89', 1.4],
+      sixstep: ['H26,59 N34,63 P58,72 E34,76 W36,88 K38,69 F42,89 e36,76 w46,70 k78,69 f80,89', 'H26,59 N34,63 P58,72 E34,76 W36,88 K78,69 F76,89 e36,76 w46,70 k38,70 f44,89', 1.4, null, 'H27,53 N34,57 P58,68 E35,70 W36,82 K74,80 F56,89 e34,70 w46,72 k77,74 f64,89'],
       freeze: [FS, 'H36,84 N42,76 P58,58 E46,74 W44,89 K62,62 F76,56 e48,74 w46,89 k64,64 f78,60', 2.6],
       jointcircles: [FR + ' E38,25 W28,25 e62,25 w72,25', 'E42,15 W40,5 e58,15 w60,5', 2],
       hipcircle: [FR + ' E42,40 W46,48 e58,40 w54,48', 'H47,14 N48,23 P55,48 E44,40 W50,47 e60,40 w58,47', 1.6],
@@ -473,8 +473,8 @@ class Component extends DCLogic {
   }
   figure(name, calm) {
     const MI = this.moveInfo(), A = this.animRows(), F = this.fams();
-    const m = MI[name];
-    const an = A[(m && m.anim) || 'stand'] || A.stand;
+    const mv = MI[name];
+    const an = A[(mv && mv.anim) || 'stand'] || A.stand;
     const parse = (str) => { const o = {}; str.trim().split(/\s+/).forEach((tok) => { const xy = tok.slice(1).split(',').map(Number); o[tok[0]] = xy; }); return o; };
     const pa = parse(an[0]), pb = parse(an[1]);
     const derive = (o, explicit) => {
@@ -484,19 +484,41 @@ class Component extends DCLogic {
     };
     const a = derive(Object.assign({}, pa), pa);
     const b = derive(Object.assign({}, a, pb), Object.assign({}, pa, pb));
-    const torso = m ? F[m.fam].color : '#E5282E';
+    const torso = mv ? F[mv.fam].color : '#E5282E';
     const SEG = [['P', 'k'], ['k', 'f'], ['N', 'e'], ['e', 'w'], ['N', 'P'], ['H', 'N'], ['P', 'K'], ['K', 'F'], ['N', 'E'], ['E', 'W']];
-    const vals = (x, y) => calm ? x + ';' + x + ';' + x : x + ';' + y + ';' + x;
-    const out = { dur: an[2] + 's', aria: 'Figure demonstrating ' + name };
+    // in-between pose: limbs swing in arcs (keeps their length); planted hands/feet stay put
+    const dist = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1]);
+    const ang = (p, q) => Math.atan2(q[1] - p[1], q[0] - p[0]);
+    const lerpA = (x, y) => { let d = y - x; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; return x + d / 2; };
+    const seg = (root, ja, jb, ra, rb) => { const l = (dist(ra, ja) + dist(rb, jb)) / 2, t = lerpA(ang(ra, ja), ang(rb, jb)); return [root[0] + l * Math.cos(t), root[1] + l * Math.sin(t)]; };
+    const ik2 = (root, target, l1, l2, side) => {
+      let D = Math.max(Math.abs(l1 - l2) + 0.05, Math.min(dist(root, target), l1 + l2 - 0.05));
+      const t = ang(root, target) - side * Math.acos(Math.max(-1, Math.min(1, (l1 * l1 + D * D - l2 * l2) / (2 * l1 * D))));
+      return [root[0] + l1 * Math.cos(t), root[1] + l1 * Math.sin(t)];
+    };
+    const m = {};
+    m.P = [(a.P[0] + b.P[0]) / 2, (a.P[1] + b.P[1]) / 2];
+    m.N = seg(m.P, a.N, b.N, a.P, b.P); m.H = seg(m.N, a.H, b.H, a.N, b.N);
+    [['N', 'E', 'W'], ['N', 'e', 'w'], ['P', 'K', 'F'], ['P', 'k', 'f']].forEach(([R, J, T]) => {
+      if (dist(a[T], b[T]) < 1.5) {
+        const cr = (a[J][0] - a[R][0]) * (a[T][1] - a[R][1]) - (a[J][1] - a[R][1]) * (a[T][0] - a[R][0]);
+        m[T] = [(a[T][0] + b[T][0]) / 2, (a[T][1] + b[T][1]) / 2];
+        m[J] = ik2(m[R], m[T], (dist(a[R], a[J]) + dist(b[R], b[J])) / 2, (dist(a[J], a[T]) + dist(b[J], b[T])) / 2, cr >= 0 ? 1 : -1);
+      } else { m[J] = seg(m[R], a[J], b[J], a[R], b[R]); m[T] = seg(m[J], a[T], b[T], a[J], b[J]); }
+    });
+    Object.keys(m).forEach((k) => { m[k] = [Math.round(m[k][0] * 10) / 10, Math.round(m[k][1] * 10) / 10]; });
+    if (an[4]) Object.assign(m, parse(an[4]));
+    const vals = (x, y, mm) => calm ? [x, x, x, x, x].join(';') : [x, mm, y, mm, x].join(';');
+    const out = { dur: an[2] + 's', aria: 'Figure demonstrating ' + name, kt: '0;0.25;0.5;0.75;1', ks: '.45 0 .55 1;.45 0 .55 1;.45 0 .55 1;.45 0 .55 1' };
     SEG.forEach(([p, q], i) => {
       out['s' + i] = {
         x1: a[p][0], y1: a[p][1], x2: a[q][0], y2: a[q][1],
-        ax1: vals(a[p][0], b[p][0]), ay1: vals(a[p][1], b[p][1]), ax2: vals(a[q][0], b[q][0]), ay2: vals(a[q][1], b[q][1]),
+        ax1: vals(a[p][0], b[p][0], m[p][0]), ay1: vals(a[p][1], b[p][1], m[p][1]), ax2: vals(a[q][0], b[q][0], m[q][0]), ay2: vals(a[q][1], b[q][1], m[q][1]),
         c: i < 4 ? '#C4C4C4' : i === 4 ? torso : '#161616',
         w: i < 4 ? 5.5 : i === 4 ? 10 : i === 5 ? 5 : 6
       };
     });
-    out.hx = a.H[0]; out.hy = a.H[1]; out.ahx = vals(a.H[0], b.H[0]); out.ahy = vals(a.H[1], b.H[1]);
+    out.hx = a.H[0]; out.hy = a.H[1]; out.ahx = vals(a.H[0], b.H[0], m.H[0]); out.ahy = vals(a.H[1], b.H[1], m.H[1]);
     const pr = an[3] || {};
     out.wx = pr.wall || -20; out.wo = pr.wall ? 1 : 0;
     const bx = pr.box || [-50, -50, 1, 1]; out.bx = bx[0]; out.by = bx[1]; out.bw = bx[2]; out.bh = bx[3]; out.bo = pr.box ? 1 : 0;
