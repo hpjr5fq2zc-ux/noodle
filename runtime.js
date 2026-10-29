@@ -80,10 +80,13 @@
   window.bootNoodle = function (Component) { comp = new Component({}); window.__noodle = comp; draw(); };
 
   function fit() {
+    var ls = window.innerWidth > window.innerHeight && window.innerHeight < 500;
+    document.body.classList.toggle('ls', ls);
+    if (ls) return;
     var s = Math.min(window.innerWidth / 390, window.innerHeight / 844);
     stage.style.transform = 'scale(' + s + ')';
     stage.style.left = Math.max(0, (window.innerWidth - 390 * s) / 2) + 'px';
   }
-  window.addEventListener('resize', fit);
+  window.addEventListener('resize', fit);window.addEventListener('orientationchange', function(){setTimeout(fit,200);});
   fit();
 })();
