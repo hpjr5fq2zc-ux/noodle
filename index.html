@@ -172,6 +172,7 @@ body.wide .tb-h1{left:84px!important;top:22px!important}
 body.wide .pa-scroll{top:0!important;left:84px!important;flex-direction:row!important;gap:30px;align-items:flex-start;padding:16px 16px 20px 0!important}
 body.wide .pa-left{display:flex!important;flex-direction:column;width:330px;flex:none}
 body.wide .pa-right{display:block!important;flex:1;position:sticky;top:0}
+body.wide .pa-results{margin-top:0!important}
 body.wide .pa-gridwrap{margin-top:0!important;width:264px!important;height:356px!important}
 body.wide .pa-grid{scale:.75;transform-origin:0 0}
 body.wide .pd{display:grid!important;grid-template-columns:380px 1fr;grid-template-rows:1fr auto}
@@ -479,14 +480,6 @@ body.wide .yo-a>section:first-child{padding:8px!important}
       <input type="search" value="{{query}}" onChange="{{onQuery}}" placeholder="Search moves, like hips or kick" style="width: 100%; box-sizing: border-box; height: 48px; border: 3px solid #161616; border-radius: 0; padding: 0 14px; font: 600 16px Inter Tight, sans-serif; color: #161616; background: #FFFFFF">
     </label>
     <sc-if value="{{hasBanner}}" hint-placeholder-val="{{ false }}"><button class="a-pop" onClick="{{bannerGo}}" style="order: 4; margin-top: 10px; height: 54px; flex: none; border: 0; background: #161616; color: #FFFFFF; display: flex; align-items: center; gap: 12px; padding: 0 14px; font: 800 15px Inter Tight, sans-serif; text-align: left"><span style="{{bannerShape}}"></span><span style="flex: 1">{{bannerText}}</span><span style="font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #FFC20E">See it</span></button></sc-if>
-    <sc-if value="{{hasQuery}}" hint-placeholder-val="{{ false }}">
-      <div style="order: 5; margin-top: 12px">
-        <h2 style="margin: 0 0 6px; font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: #595959">{{resultCount}}</h2>
-        <sc-for list="{{results}}" as="r" hint-placeholder-count="4">
-          <button onClick="{{r.open}}" style="width: 100%; display: flex; align-items: center; gap: 12px; height: 52px; border: 0; border-bottom: 2px solid #EFEFEF; background: transparent; padding: 0; text-align: left; font: 700 16px Inter Tight, sans-serif; color: #161616"><span style="{{r.shape}}"></span><span style="flex: 1">{{r.n}}</span><span style="font-size: 12px; font-weight: 600; color: #595959">{{r.fam}}</span></button>
-        </sc-for>
-      </div>
-    </sc-if>
     <div class="pa-picks" style="order: 7; margin-top: 22px">
       <h2 style="margin: 0; font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: #595959">Noodle picks for you</h2>
       <sc-for list="{{picks}}" as="pk" hint-placeholder-count="3">
@@ -499,6 +492,14 @@ body.wide .yo-a>section:first-child{padding:8px!important}
     </div>
    </div>
    <div class="pa-right" style="display: contents">
+    <sc-if value="{{hasQuery}}" hint-placeholder-val="{{ false }}">
+      <div style="order: 5; margin-top: 12px" class="pa-results">
+        <h2 style="margin: 0 0 6px; font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: #595959">{{resultCount}}</h2>
+        <sc-for list="{{results}}" as="r" hint-placeholder-count="4">
+          <button onClick="{{r.open}}" style="width: 100%; display: flex; align-items: center; gap: 12px; height: 52px; border: 0; border-bottom: 2px solid #EFEFEF; background: transparent; padding: 0; text-align: left; font: 700 16px Inter Tight, sans-serif; color: #161616"><span style="{{r.shape}}"></span><span style="flex: 1">{{r.n}}</span><span style="font-size: 12px; font-weight: 600; color: #595959">{{r.fam}}</span></button>
+        </sc-for>
+      </div>
+    </sc-if>
     <sc-if value="{{noQuery}}" hint-placeholder-val="{{ true }}">
     <div class="pa-gridwrap" style="order: 6; margin-top: 14px; flex: none; width: 356px; height: 476px; align-self: center">
       <div class="a-up d2 pa-grid" style="position: relative; width: 350px; height: 470px; background: #161616; border: 3px solid #161616">
