@@ -424,13 +424,48 @@ class Component extends DCLogic {
       mobility: [['90/90 hip switch', '8 per side'], ['Spine waves', '8 slow reps'], ['Deep squat hold', '60 s'], ['Shoulder circles', '10 each way'], ['Cossack squat', '6 per side']]
     };
   }
+  dur(rx) {
+    const t = String(rx || '').toLowerCase(), side = /per side|each way|each side/.test(t) ? 2 : 1;
+    let m, secs;
+    if ((m = t.match(/(\d+)\s*rounds? of (\d+)\s*min/))) secs = m[1] * m[2] * 60 + (m[1] - 1) * 15;
+    else if ((m = t.match(/(\d+)\s*×\s*(\d+)\s*s\b/))) secs = m[1] * m[2] * side + (m[1] - 1) * 20;
+    else if ((m = t.match(/(\d+)\s*×\s*(\d+)/))) secs = m[1] * m[2] * 3 * side + (m[1] - 1) * 30;
+    else if ((m = t.match(/(\d+)\s*min/))) secs = m[1] * 60 * (side === 2 && !/each way/.test(t) ? 2 : 1);
+    else if ((m = t.match(/(\d+)\s*s\b/))) secs = m[1] * side;
+    else if ((m = t.match(/(\d+)\s*tries/))) secs = m[1] * 20;
+    else if ((m = t.match(/(\d+)\s*slow rounds/))) secs = m[1] * 30;
+    else if ((m = t.match(/(\d+)/))) secs = m[1] * 3 * side;
+    else secs = 60;
+    return Math.min(330, Math.max(20, Math.round(secs / 5) * 5));
+  }
+  planSecs(blocks) { return blocks.reduce((a, b) => a + b.moves.reduce((x, m) => x + m.secs + 15, 0), 0); }
   plan() {
+    const s0 = this.state;
+    const key = JSON.stringify([s0.time, s0.energy, s0.mood, s0.seed, s0.swaps, s0.levels, new Date().getDate()]);
+    if (this._pk === key) return this._pc;
+    const target = s0.time * 60, extra = [0, 0, 0, 0];
+    const order = s0.mood === 'Chill' ? [3, 2, 0] : [1, 2, 3, 1, 0];
+    const count = (b) => b.reduce((x, y) => x + y.moves.length, 0);
+    let out = this.planN(extra);
+    for (let g = 0; g < 30 && this.planSecs(out) < target * 0.92; g++) {
+      extra[order[g % order.length]]++;
+      const nx = this.planN(extra);
+      if (count(nx) > count(out)) out = nx;
+      if (this.planSecs(out) > target * 1.08) break;
+    }
+    const tot = this.planSecs(out);
+    if (tot < target * 0.92) { const f = Math.min(1.6, target / tot); out.forEach((b) => b.moves.forEach((m) => { m.secs = Math.round(m.secs * f / 5) * 5; })); }
+    this._pk = key; this._pc = out;
+    return out;
+  }
+  planN(extra) {
     const s = this.state, F = this.fams(), BK = this.bank(), U = this.unlocked(s.levels);
     const t = s.time;
     const n = (t <= 10 ? [1, 2, 1, 1] : t <= 20 ? [2, 3, 2, 2] : t <= 35 ? [2, 4, 2, 3] : [3, 5, 3, 3]).slice();
     if (s.energy < 34) { n[1] = Math.max(1, n[1] - 1); n[3] += 1; }
     if (s.energy >= 67) { n[1] += 1; }
     if (s.mood === 'Chill') { n[1] = 0; n[3] += 1; }
+    extra.forEach((e, i) => { if (!(s.mood === 'Chill' && i === 1)) n[i] += e; });
     const lv = (k) => s.levels[k] || 0;
     const used = {};
     const choose = (cands, k) => {
@@ -454,7 +489,7 @@ class Component extends DCLogic {
     };
     const pl = PLAY[s.mood] || PLAY.Surprise;
     const blocks = [];
-    const mk = (key, name, color, shape, picks) => blocks.push({ key, name, color, shape, moves: picks.filter(Boolean).map((m, i) => ({ id: key + i, n: m.n, rx: m.rx, block: name, fam: m.fam, color: F[m.fam].color, ink: F[m.fam].ink, pose: 'walk', swapCount: s.swaps[key + i] || 0 })) });
+    const mk = (key, name, color, shape, picks) => blocks.push({ key, name, color, shape, moves: picks.filter(Boolean).map((m, i) => ({ id: key + i, n: m.n, rx: m.rx, block: name, fam: m.fam, color: F[m.fam].color, ink: F[m.fam].ink, pose: 'walk', secs: this.dur(m.rx), swapCount: s.swaps[key + i] || 0 })) });
     const warmPool = upTo('mobility').concat(BK.filter((m) => m.fam === 'cond' && m.role === 'w'));
     mk('warm', 'Warm up', '#0E8178', 'pill', Array.from({ length: n[0] }, (_, i) => choose(warmPool, 'warm' + i)));
     mk('strength', 'Strength', '#E5282E', 'circle', Array.from({ length: n[1] }, (_, i) => choose(atLevel(rot[(off + i) % rot.length]), 'strength' + i)));
@@ -465,7 +500,8 @@ class Component extends DCLogic {
     return blocks.filter((b) => b.moves.length);
   }
   flat() { return this.plan().reduce((a, b) => a.concat(b.moves), []); }
-  per() { const f = this.flat(); return Math.max(20, Math.round(this.state.time * 60 / f.length)); }
+  secsAt(i) { const f = this.flat(); return f[i] ? f[i].secs : 30; }
+  per() { return this.secsAt(this.state.idx); }
   swipeTo(screen, extra) {
     const order = ['checkin', 'paths', 'explore', 'you'];
     const dir = order.indexOf(screen) >= order.indexOf(this.state.screen) ? 'swl' : 'swr';
@@ -493,12 +529,12 @@ class Component extends DCLogic {
     if (s.idx + 1 >= f.length) { this.finish(tried); return; }
     this.setState({ tried, resting: true, remaining: 15, askFb: this.isStrengthMove(f[s.idx]), fbMsg: '' });
   }
-  endRest() { this.setState({ resting: false, askFb: false, idx: this.state.idx + 1, remaining: this.per() }); }
+  endRest() { this.setState({ resting: false, askFb: false, idx: this.state.idx + 1, remaining: this.secsAt(this.state.idx + 1) }); }
   skip() {
     const f = this.flat(), s = this.state;
     if (s.resting) { this.endRest(); return; }
     if (s.idx + 1 >= f.length) { this.finish(s.tried); return; }
-    this.setState({ idx: s.idx + 1, remaining: this.per(), askFb: false, fbMsg: '' });
+    this.setState({ idx: s.idx + 1, remaining: this.secsAt(s.idx + 1), askFb: false, fbMsg: '' });
   }
   finish(tried) {
     const plan = this.plan(), F = this.fams(), MI = this.moveInfo();
@@ -579,7 +615,7 @@ class Component extends DCLogic {
       }))
     }));
     const flat = plan.reduce((a, b) => a.concat(b.moves), []);
-    const per = Math.max(20, Math.round(s.time * 60 / flat.length));
+    const per = flat[s.idx] ? flat[s.idx].secs : 30, per0 = flat[0] ? flat[0].secs : 30;
     const idx = Math.min(s.idx, flat.length - 1);
     const cur = flat[idx] || { n: '', rx: '', block: '', color: '#E5282E', ink: '#FFFFFF', pose: 'walk' };
     const C = 2 * Math.PI * 62;
@@ -676,7 +712,7 @@ class Component extends DCLogic {
       mvEasier, mvHarder,
       openEasier: () => this.setState({ moveOpen: mvEasier }),
       openHarder: () => this.setState({ moveOpen: mvHarder }),
-      startAll: () => { this.ensureAudio(); this.beep(880, 0.2); this.transitionTo('player', '#161616', { idx: 0, remaining: per, paused: false, resting: false, askFb: false, fbMsg: '' }); },
+      startAll: () => { this.ensureAudio(); this.beep(880, 0.2); this.transitionTo('player', '#161616', { idx: 0, remaining: per0, paused: false, resting: false, askFb: false, fbMsg: '' }); },
       rootClass: s.calm ? 'calm' : '',
       chatter: s.chatter,
       restLine: restLines[s.idx % restLines.length],
@@ -762,7 +798,7 @@ class Component extends DCLogic {
       shuffle: () => this.setState({ seed: s.seed + 1, swaps: {} }),
       summary: (s.mood === 'Chill' ? 'Chill day' : energyLabel + ' energy') + ' · ' + flat.length + ' moves · ' + (s.mood === 'Surprise' ? 'surprise' : s.mood.toLowerCase()),
       blocks,
-      start: () => { this.ensureAudio(); this.beep(880, 0.2); }, startGo: () => this.transitionTo('player', '#161616', { idx: 0, remaining: per, paused: false, resting: false, askFb: false, fbMsg: '' }),
+      start: () => { this.ensureAudio(); this.beep(880, 0.2); }, startGo: () => this.transitionTo('player', '#161616', { idx: 0, remaining: per0, paused: false, resting: false, askFb: false, fbMsg: '' }),
       stage: 'position:relative;height:500px;flex:none;overflow:hidden;color:' + (s.resting ? '#161616' : cur.ink) + ';background:' + (s.resting ? '#EDEDED' : cur.color) + ';transition:background .5s,color .5s',
       blockLabel: 'margin:0;font-size:12px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;opacity:.85',
       cur, pEven: !s.resting && idx % 2 === 0, pOdd: !s.resting && idx % 2 === 1,
@@ -774,7 +810,7 @@ class Component extends DCLogic {
       pauseLabel: s.paused ? 'Resume' : 'Pause',
       togglePause: () => this.setState({ paused: !s.paused }),
       next: () => this.skip(),
-      prev: () => this.setState(s.resting ? { resting: false, askFb: false, remaining: per } : { idx: Math.max(0, idx - 1), remaining: per }),
+      prev: () => this.setState(s.resting ? { resting: false, askFb: false, remaining: per } : { idx: Math.max(0, idx - 1), remaining: this.secsAt(Math.max(0, idx - 1)) }),
       exitPlayer: () => this.transitionTo('session', '#1556C2', { idx: 0 }),
       upNext: idx + 1 < flat.length ? flat[idx + 1].n : 'Finish!',
       resting: s.resting,
