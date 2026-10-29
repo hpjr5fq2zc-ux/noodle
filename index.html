@@ -33,9 +33,9 @@ a{color:#1556C2}a:hover{color:#0E3F92}
 @keyframes trRoll{0%{transform:none}20%{transform:translateY(-10px)}80%{transform:translateY(-10px) rotate(360deg)}100%{transform:rotate(360deg)}}
 @keyframes trBow{0%,100%{transform:none}30%,70%{transform:rotate(14deg)}}
 @keyframes trDance{0%,100%{transform:none}12%{transform:translateX(-10px) rotate(-8deg)}25%{transform:translateX(10px) rotate(8deg) translateY(-6px)}37%{transform:translateX(-10px) rotate(-8deg)}50%{transform:translateX(10px) rotate(8deg) translateY(-6px)}62%{transform:translateX(-10px) rotate(-8deg)}75%{transform:translateX(10px) rotate(8deg)}}
-@keyframes trHand{0%,100%{transform:none}30%,75%{transform:translateY(-20px) rotate(90deg)}}
+@keyframes trHand{0%,100%{transform:none}25%,75%{transform:rotate(-58deg)}40%{transform:rotate(-62deg)}60%{transform:rotate(-55deg)}}
 @keyframes trMoon{0%,100%{transform:none}45%{transform:translateX(-28px)}50%{transform:translateX(-28px) scaleX(-1)}95%{transform:scaleX(-1)}}
-@keyframes trFlip{0%{transform:none}15%{transform:scale(1.1,.85)}55%{transform:translateY(-50px) rotate(-200deg)}85%{transform:translateY(-4px) rotate(-360deg)}100%{transform:rotate(-360deg)}}
+@keyframes trFlip{0%{transform:none}12%{transform:scale(1.1,.82)}30%{transform:translateY(-30px) rotate(-60deg)}55%{transform:translateY(-44px) rotate(-200deg)}80%{transform:translateY(-8px) rotate(-340deg)}90%{transform:rotate(-360deg) scale(1.08,.88)}100%{transform:rotate(-360deg)}}
 @keyframes trSit2{0%,100%{transform:none}30%,70%{transform:scale(1.12,.78)}}
 @keyframes trWag2{0%,100%{transform:none}20%{transform:rotate(-5deg)}40%{transform:rotate(5deg)}60%{transform:rotate(-5deg)}80%{transform:rotate(5deg)}}
 @keyframes trHop2{0%,100%{transform:none}15%{transform:scale(1.1,.85)}35%{transform:translateY(-34px)}55%{transform:none}70%{transform:translateY(-16px)}85%{transform:none}}
@@ -43,9 +43,9 @@ a{color:#1556C2}a:hover{color:#0E3F92}
 @keyframes trRoll2{0%{transform:none}20%{transform:translateY(-10px)}80%{transform:translateY(-10px) rotate(360deg)}100%{transform:rotate(360deg)}}
 @keyframes trBow2{0%,100%{transform:none}30%,70%{transform:rotate(14deg)}}
 @keyframes trDance2{0%,100%{transform:none}12%{transform:translateX(-10px) rotate(-8deg)}25%{transform:translateX(10px) rotate(8deg) translateY(-6px)}37%{transform:translateX(-10px) rotate(-8deg)}50%{transform:translateX(10px) rotate(8deg) translateY(-6px)}62%{transform:translateX(-10px) rotate(-8deg)}75%{transform:translateX(10px) rotate(8deg)}}
-@keyframes trHand2{0%,100%{transform:none}30%,75%{transform:translateY(-20px) rotate(90deg)}}
+@keyframes trHand2{0%,100%{transform:none}25%,75%{transform:rotate(-58deg)}40%{transform:rotate(-62deg)}60%{transform:rotate(-55deg)}}
 @keyframes trMoon2{0%,100%{transform:none}45%{transform:translateX(-28px)}50%{transform:translateX(-28px) scaleX(-1)}95%{transform:scaleX(-1)}}
-@keyframes trFlip2{0%{transform:none}15%{transform:scale(1.1,.85)}55%{transform:translateY(-50px) rotate(-200deg)}85%{transform:translateY(-4px) rotate(-360deg)}100%{transform:rotate(-360deg)}}
+@keyframes trFlip2{0%{transform:none}12%{transform:scale(1.1,.82)}30%{transform:translateY(-30px) rotate(-60deg)}55%{transform:translateY(-44px) rotate(-200deg)}80%{transform:translateY(-8px) rotate(-340deg)}90%{transform:rotate(-360deg) scale(1.08,.88)}100%{transform:rotate(-360deg)}}
 @keyframes flipA{from{transform:perspective(400px) rotateY(90deg)}to{transform:none}}
 @keyframes flipB{from{transform:perspective(400px) rotateY(-90deg)}to{transform:none}}
 @keyframes swipeL{from{transform:translateX(100%)}to{transform:none}}
@@ -645,8 +645,22 @@ body.wide .yo-a>section:first-child{padding:8px!important}
         <span style="font-size: 13px; font-weight: 900">{{foundCount}}</span>
       </div>
       <div style="margin-top: 6px; height: 8px; background: #EFEFEF"><span style="{{foundBar}}"></span></div>
-      <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(22px, 1fr)); gap: 2px">
-        <sc-for list="{{collection}}" as="co" hint-placeholder-count="40"><button onClick="{{co.open}}" aria-label="{{co.aria}}" style="height: 22px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center"><span style="{{co.shape}}"></span></button></sc-for>
+      <div style="margin-top: 8px">
+        <sc-for list="{{collFams}}" as="cf" hint-placeholder-count="9">
+          <div style="border-bottom: 2px solid #EFEFEF">
+            <button onClick="{{cf.toggle}}" aria-expanded="{{cf.openAttr}}" style="width: 100%; border: 0; background: transparent; padding: 9px 0; display: flex; align-items: center; gap: 10px; font-family: Inter Tight, sans-serif; color: #161616; text-align: left">
+              <span style="width: 16px; display: flex; justify-content: center"><span style="{{cf.shape}}"></span></span>
+              <span style="width: 92px; flex: none; font-size: 13px; font-weight: 800">{{cf.name}}</span>
+              <span style="flex: 1; display: flex; gap: 2px; height: 8px"><sc-for list="{{cf.segs}}" as="sg" hint-placeholder-count="10"><span style="{{sg.s}}"></span></sc-for></span>
+              <span style="width: 38px; flex: none; text-align: right; font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums">{{cf.count}}</span>
+            </button>
+            <sc-if value="{{cf.open}}" hint-placeholder-val="{{ false }}">
+              <div class="a-up" style="display: flex; flex-wrap: wrap; gap: 4px; padding: 0 0 10px 26px">
+                <sc-for list="{{cf.moves}}" as="cm" hint-placeholder-count="3"><button onClick="{{cm.open}}" style="{{cm.box}}">{{cm.n}}</button></sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
       </div>
       <p style="margin: 8px 0 0; font-size: 13px; color: #595959; min-height: 18px">{{collectHint}}</p>
     </section>

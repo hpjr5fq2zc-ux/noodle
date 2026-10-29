@@ -105,7 +105,7 @@ window.bootNoodle = function (C) { window.__C = C; };
       var id = 'T' + (i + 1), on = !!flags[id];
       if (onlyFlag && !on) return;
       var d = t[3] * (slow ? 2.5 : 1);
-      tr += '<div class="card tr' + (on ? ' flag' : '') + '"><span class="num">' + id + '</span><div class="stage"><span style="animation:' + t[2] + ' ' + d + 's cubic-bezier(.3,.7,.4,1) 0s infinite">' + NOODLE + '</span></div><p class="name">' + t[0] + '</p><p class="meta">Unlocks at ' + t[1] + ' level-ups</p><button class="flagbtn" data-id="' + id + '" data-name="Trick: ' + t[0] + '">' + (on ? 'Flagged' : 'Looks off') + '</button></div>';
+      tr += '<div class="card tr' + (on ? ' flag' : '') + '"><span class="num">' + id + '</span><div class="stage"><span style="transform-origin:' + (t[4] || '50% 90%') + ';animation:' + t[2] + ' ' + d + 's cubic-bezier(.3,.7,.4,1) 0s infinite">' + NOODLE + '</span></div><p class="name">' + t[0] + '</p><p class="meta">Unlocks at ' + t[1] + ' level-ups</p><button class="flagbtn" data-id="' + id + '" data-name="Trick: ' + t[0] + '">' + (on ? 'Flagged' : 'Looks off') + '</button></div>';
     });
     html += tr + '</div>';
     famKeys.forEach(function (fk) {

@@ -55,7 +55,7 @@ class Component extends DCLogic {
     this.setState({ log, history });
   }
   tricks() {
-    return [['Sit', 0, 'trSit', 0.9], ['Wag', 1, 'trWag', 0.8], ['Hop', 2, 'trHop', 1.0], ['Spin', 4, 'trSpin', 0.9], ['Roll over', 6, 'trRoll', 1.1], ['Bow', 9, 'trBow', 1.2], ['Dance', 12, 'trDance', 1.4], ['Handstand', 16, 'trHand', 1.6], ['Moonwalk', 20, 'trMoon', 1.6], ['Backflip', 26, 'trFlip', 1.1]];
+    return [['Sit', 0, 'trSit', 0.9], ['Wag', 1, 'trWag', 0.8], ['Hop', 2, 'trHop', 1.0], ['Spin', 4, 'trSpin', 0.9], ['Roll over', 6, 'trRoll', 1.1], ['Bow', 9, 'trBow', 1.2], ['Dance', 12, 'trDance', 1.4], ['Handstand', 16, 'trHand', 1.8, '82% 96%'], ['Moonwalk', 20, 'trMoon', 1.6], ['Backflip', 26, 'trFlip', 1.2, '50% 55%']];
   }
   doTrick(name) {
     const s = this.state, T = this.tricks();
@@ -283,7 +283,7 @@ class Component extends DCLogic {
       ['Towel pass-through', 'mobility', 1, 'v', '10', 'jointcircles', 'Hold a towel wide, arms straight.', 'Lift it over your head and behind you.', ['shoulders', 'chest'], ['shoulders']],
       ['Deep squat sit', 'mobility', 2, 'm', '1 min', 'deepsquat', 'Sink into your deepest squat, heels down.', 'Elbows push your knees out.', ['hips', 'legs'], ['glutes']],
       ["World's greatest stretch", 'mobility', 2, 'v', '3 per side', 'lowlunge', 'Long lunge, hand inside your front foot.', 'Rotate and reach the other arm up.', ['hips', 'legs', 'core'], ['hamstrings', 'back']],
-      ['Spine waves', 'mobility', 2, 'v', '8 slow', 'fold', 'Roll down one vertebra at a time.', 'Roll back up from the bottom.', ['core'], ['back', 'lowback']],
+      ['Spine waves', 'mobility', 2, 'v', '8 slow', 'wave', 'Roll down one vertebra at a time.', 'Roll back up from the bottom.', ['core'], ['back', 'lowback']],
       ['Wrist prep circuit', 'mobility', 2, 'v', '1 min', 'catcow', 'On all fours, rock gently over your hands.', 'Turn your fingers sideways, then back, and rock again.', ['arms'], ['arms']],
       ['Deep squat with rotations', 'mobility', 3, 'm', '2 min', 'deepsquat', 'Sit in a deep squat.', 'Reach one arm up and rotate, then switch.', ['hips', 'legs', 'core'], ['back', 'glutes']],
       ['Jefferson curl', 'mobility', 3, 'v', '2 × 6 slow', 'fold', 'Stand tall and tuck your chin.', 'Curl down one vertebra at a time, then roll up.', [], ['back', 'lowback', 'hamstrings']],
@@ -373,7 +373,7 @@ class Component extends DCLogic {
       cossack: ['H50,26 N50,35 P50,60 E44,46 W48,56 K34,70 F26,89 e56,46 w52,56 k66,70 f74,89', 'H36,38 N38,47 P34,74 E40,58 W46,64 K24,74 e44,58 w50,64 k60,80 f78,86', 2.8],
       pistol: [S + ' E56,32 W66,32 e56,33 w66,33 k58,60 f70,62', 'H56,52 N55,60 P44,78 E64,62 W74,62 K58,76 F50,89 e64,63 w74,63 k66,82 f84,82', 3],
       rdl: ['H50,14 N50,23 P52,49 E50,36 W50,48 K52,69 F52,89 e54,36 w54,48 k56,68 f58,88', 'H24,40 N32,42 P54,48 E33,52 W33,62 K54,69 F54,89 e35,52 w35,62 k70,46 f86,44', 2.8],
-      nordic: ['H50,32 N50,40 P50,64 E50,50 W50,58 K50,88 F28,88 e52,50 w52,58 k52,88 f30,88', 'H38,38 N41,45 P47,65 E43,54 W44,62 e45,54 w46,62', 2.8],
+      nordic: ['H50,33 N50,42 P50,68 E45,54 W57,51 K50,88 F30,88 e46,54 w58,52 k52,88 f32,88', 'H16,45 N22,52 P38,72 E22,65 W32,59 K50,88 F30,88 e22,65 w33,60 k52,88 f32,88', 2.8],
       deadbug: [LY + ' E22,72 W22,62 K46,70 F58,70 e24,72 w24,62 k48,70 f60,70 H12,82 N20,82 P46,84', 'E12,74 W4,70 K56,78 F72,82', 2.4],
       birddog: [BD, 'E18,60 W8,58 K72,62 F88,62', 2.4],
       plank: ['H20,70 N28,73 P56,75 E28,88 W16,88 K72,81 F88,88 e30,88 w18,88 k72,81 f88,88', 'H20,69 N28,72 P56,73', 3],
@@ -387,7 +387,7 @@ class Component extends DCLogic {
       vup: [LY + ' P48,86 E10,84 W2,84 K68,86 F86,86 e10,84 w2,84 k68,86 f86,86', 'H34,62 N38,70 P50,84 E46,60 W58,52 K62,66 F70,52 e46,60 w58,52 k62,66 f70,52', 2],
       singleleg: ['H50,14 N50,23 P50,49 E40,34 W32,40 K49,69 F49,89 e60,34 w68,40 k58,58 f54,72', 'H51,14 N51,23', 3],
       march: [S, 'K56,58 F54,74 E44,36 W40,44 e58,38 w64,44', 1.2],
-      jog: [S + ' E52,38 W58,32 e46,38 w40,32', 'K56,58 F54,72 E44,36 W40,30 e56,38 w62,30', 0.6],
+      jog: ['H52,13 N52,22 P50,48 E47,34 W40,44 K69,53 F66,73 e63,28 w62,40 k50,68 f49,88', 'H52,13 N52,22 P50,48 E63,28 W62,40 K50,68 F49,88 e47,34 w40,44 k69,53 f66,73', 0.7],
       frogstand: [FS, 'H27,72 N34,66 P54,52 K42,72 F62,76 k44,72 f64,76', 2.6],
       mountain: [PU, 'P54,70 K44,78 F50,86', 1],
       skater: [FR + ' E44,36 W40,46 e56,36 w60,46', 'H40,22 N41,31 P42,54 E34,40 W30,50 e50,40 w58,46 K34,70 F30,89 k54,72 f62,86', 1.6],
@@ -400,16 +400,17 @@ class Component extends DCLogic {
       knee: [JA, 'K58,46 F54,64 E60,44 W58,50', 1.2],
       roundkick: [JA, 'H42,18 N43,27 P47,50 K62,46 F82,40 E38,32 W32,36', 1.4],
       indianstep: [S, 'F64,84 K58,70 E42,36 W36,44 e58,36 w62,42', 0.9],
-      sixstep: ['H36,54 N40,60 P52,66 E38,74 W36,89 K64,72 F70,89 e40,74 w38,89 k44,80 f56,89', 'K56,78 F42,89 k66,74 f78,88', 1.4],
+      sixstep: ['H26,59 N34,63 P58,72 E34,76 W36,88 K38,69 F42,89 e36,76 w46,70 k78,69 f80,89', 'H26,59 N34,63 P58,72 E34,76 W36,88 K78,69 F76,89 e36,76 w46,70 k38,70 f44,89', 1.4],
       freeze: [FS, 'H36,84 N42,76 P58,58 E46,74 W44,89 K62,62 F76,56 e48,74 w46,89 k64,64 f78,60', 2.6],
       jointcircles: [FR + ' E38,25 W28,25 e62,25 w72,25', 'E42,15 W40,5 e58,15 w60,5', 2],
       hipcircle: [FR + ' E42,40 W46,48 e58,40 w54,48', 'H47,14 N48,23 P55,48 E44,40 W50,47 e60,40 w58,47', 1.6],
       lowlunge: ['H50,32 N50,40 P50,64 E50,52 W52,62 K64,70 F64,89 e52,52 w54,62 k40,86 f26,88', 'H54,38 N53,46 P53,70 E57,58 W60,66 e59,58 w62,66 K67,72', 3],
-      hip9090: ['H40,40 N42,48 P46,78 E50,60 W56,70 K60,70 F66,86 e38,60 w34,72 k30,74 f28,86', 'H52,40 N50,48 K34,70 F28,86 k60,74 f66,86', 2.4],
+      hip9090: ['H43,49 N43,58 P46,84 E38,70 W33,81 K62,72 F75,87 e39,70 w35,82 k63,74 f79,87', 'H43,49 N43,58 P46,84 E38,70 W33,81 K66,83 F47,88 e39,70 w35,82 k66,86 f46,89', 2.4],
       catcow: [BD + ' H24,70 N28,62', 'H20,54 N28,64 P58,64', 3],
       twistlie: [LY + ' e30,88 w40,88 P46,86 K58,70 F66,86 k60,70 f68,86', 'K64,80 F70,88 k66,80 f72,88', 3],
       deepsquat: [SQB, 'H48,44 N49,52', 3],
-      fold: [S, 'H56,64 N54,56 P50,48 E58,66 W56,78 e60,66 w58,78', 3],
+      wave: ['H57,16 N53,25 P47,50 E51,38 W49,49 K51,70 F47,89 e52,38 w51,50 k53,69 f53,89', 'H46,16 N48,24 P53,50 E49,37 W50,49 K53,70 F47,89 e50,37 w52,49 k57,70 f53,89', 2.4],
+      fold: ['H50,14 N50,23 P50,49 E48,36 W47,48 K49,69 F47,89 e49,36 w49,48 k52,69 f53,89', 'H63,80 N61,72 P48,49 E50,78 W57,88 K48,69 F47,89 e51,79 w59,88 k51,69 f53,89', 3],
       bridge: [LY + ' E18,78 W20,89 e20,78 w22,89 P46,86 K60,70 F70,89 k62,70 f72,89 H14,84 N22,85', 'H22,76 N26,66 P50,48 E22,78 W20,89 K66,64 F70,89 e24,78 w22,89 k68,64 f72,89', 3],
       pigeon: ['H44,40 N44,48 P44,80 E46,62 W48,76 K60,84 F48,88 e42,62 w40,76 k30,86 f10,88', 'H64,74 N56,72 E66,80 W76,86 e64,80 w74,86', 3.4],
       halfsplit: ['H44,34 N44,42 P44,66 E44,54 W44,64 K44,88 F30,88 e46,54 w46,64 k60,80 f78,88', 'H62,58 N56,56 E60,70 W64,80 e62,70 w66,80', 3],
@@ -845,6 +846,20 @@ class Component extends DCLogic {
       collection.push({ got, aria: got ? n : 'Undiscovered ' + F[fk].name + ' move', shape: this.shp(F[fk].shape, got ? F[fk].color : '#E4E4E4', 14), open: got ? () => this.openMove(n, 'you') : () => this.setState({ collectHint: 'Still hiding: a ' + F[fk].name + ' move. Keep moving to find it.' }) });
     }));
     const foundN = collection.filter((c) => c.got).length;
+    const collFams = famOrder.map((fk) => {
+      const ms = allMoves.filter((n) => MI[n].fam === fk).sort((p, q) => MI[p].lvl - MI[q].lvl);
+      if (!ms.length) return null;
+      const got = ms.filter((n) => s.tried[n]), open = s.collOpen === fk;
+      const locked = F[fk].hidden && !U[fk];
+      return {
+        name: locked ? '???' : F[fk].name, shape: this.shp(F[fk].shape, got.length ? F[fk].color : '#D0D0D0', 14),
+        count: got.length + '/' + ms.length, open, openAttr: open ? 'true' : 'false',
+        toggle: () => this.setState({ collOpen: open ? null : fk }),
+        segs: ms.map((n) => ({ s: 'flex:1;height:8px;background:' + (s.tried[n] ? F[fk].color : '#EAEAEA') })),
+        moves: got.map((n) => ({ n, open: () => this.openMove(n, 'you'), box: 'border:0;padding:4px 8px;font:700 12px Inter Tight,sans-serif;background:#F4F4F4;color:#161616;cursor:pointer' }))
+          .concat(ms.length > got.length ? [{ n: (ms.length - got.length) + ' still hiding', open: () => {}, box: 'border:2px dashed #D0D0D0;padding:2px 8px;font:700 12px Inter Tight,sans-serif;background:#FFFFFF;color:#8A8A8A' }] : [])
+      };
+    }).filter(Boolean);
     const lvSum = Object.keys(s.levels).reduce((x, k) => x + (s.levels[k] || 0), 0);
     const TR = this.tricks(), openT = TR.filter((t) => lvSum >= t[1]), nextT = TR.find((t) => lvSum < t[1]);
     const curT = TR.find((t) => t[0] === s.trickName);
@@ -923,13 +938,13 @@ class Component extends DCLogic {
       regionName: pretty[region].replace(/^./, (c) => c.toUpperCase()), regionLine,
       regionGoLabel: 'Give your ' + pretty[region] + ' some love · 15 min',
       regionGo: go('session', '#1556C2', { focus: region, mood: 'Surprise', time: 15, energy: 50, swaps: {}, idx: 0, visited: true }),
-      collection, foundCount: foundN + ' of ' + collection.length,
+      collection, collFams, foundCount: foundN + ' of ' + collection.length,
       foundBar: 'display:block;height:100%;background:#161616;width:' + Math.round(foundN / Math.max(1, collection.length) * 100) + '%',
-      collectHint: s.collectHint || (foundN ? 'Tap a colored shape to see that move again.' : 'Every move you try fills in a shape.'),
+      collectHint: 'Every move you try fills in a bar. Tap a family to see what you found.',
       tricks, trickCount: openT.length + ' of ' + TR.length,
       trickLine: nextT ? 'Tap Noodle! Level up ' + (nextT[1] - lvSum) + ' more ' + (nextT[1] - lvSum === 1 ? 'time' : 'times') + ' to teach ' + nextT[0].toLowerCase() + '.' : 'Noodle knows every trick. Show-off.',
       doTrick: () => this.doTrick(),
-      trickAnim: 'display:block;transform-origin:50% 90%;' + (curT && !s.calm ? 'animation:' + curT[2] + (s.trickN % 2 ? '' : '2') + ' ' + curT[3] + 's cubic-bezier(.3,.7,.4,1) both' : ''),
+      trickAnim: 'display:block;transform-origin:' + ((curT && curT[4]) || '50% 90%') + ';' + (curT && !s.calm ? 'animation:' + curT[2] + (s.trickN % 2 ? '' : '2') + ' ' + curT[3] + 's cubic-bezier(.3,.7,.4,1) both' : ''),
       settingsOpen: s.settingsOpen, openSettings: () => this.setState({ settingsOpen: true, setMsg: '', resetArm: false }), closeSettings: () => this.setState({ settingsOpen: false }),
       calmOn: s.calm ? 'true' : 'false', calmTrack: cT.track, calmKnob: cT.knob, toggleCalm: () => this.setState({ calm: !s.calm }),
       soundOn: s.sound ? 'true' : 'false', soundTrack: sT.track, soundKnob: sT.knob, toggleSound: () => { this.ensureAudio(); this.setState({ sound: !s.sound }); },
