@@ -611,7 +611,7 @@ class Component extends DCLogic {
   secsAt(i) { const f = this.flat(); return f[i] ? f[i].secs : 30; }
   per() { return this.secsAt(this.state.idx); }
   swipeTo(screen, extra) {
-    const order = ['checkin', 'paths', 'explore', 'you'];
+    const order = ['checkin', 'paths', 'you'];
     const dir = order.indexOf(screen) >= order.indexOf(this.state.screen) ? 'swl' : 'swr';
     this.setState(Object.assign({ screen, swipe: dir, expanding: false }, extra || {}));
   }
@@ -875,7 +875,7 @@ class Component extends DCLogic {
       lastMove: cur.n,
       fbEasy: () => this.feedback('easy'), fbRight: () => this.feedback('right'), fbHard: () => this.feedback('hard'),
       navHome: () => this.swipeTo('checkin', { pathOpen: null }),
-      navPaths: () => this.swipeTo('paths', { pathOpen: null }),
+      navPaths: () => this.swipeTo('paths', { pathOpen: null, query: '' }),
       navExplore: () => this.swipeTo('explore', { query: '' }),
       navYou: () => this.swipeTo('you'),
       tabClass: s.swipe || 'a-screen',
@@ -905,14 +905,14 @@ class Component extends DCLogic {
       query: s.query, onQuery: (e) => this.setState({ query: e.target.value }),
       hasQuery: !!q, noQuery: !q,
       resultCount: results.length ? results.length + (results.length === 1 ? ' match' : ' matches') : 'No matches yet. Try hips, push or kick.',
-      results: results.map((n) => ({ n, fam: F[MI[n].fam].name, shape: this.shp(F[MI[n].fam].shape, F[MI[n].fam].color, 18), open: () => this.openMove(n, 'explore') })),
+      results: results.map((n) => ({ n, fam: F[MI[n].fam].name, shape: this.shp(F[MI[n].fam].shape, F[MI[n].fam].color, 18), open: () => this.openMove(n, 'paths') })),
       famTiles: Object.keys(F).filter((k) => k !== 'cond' && (!F[k].hidden || U[k])).map((k, i) => ({
         name: F[k].name,
         box: 'height:104px;border:0;padding:10px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;cursor:pointer;font-family:Inter Tight,sans-serif;background:' + F[k].color + ';color:' + F[k].ink + ';animation-delay:' + (i * 0.04) + 's',
         shape: this.shp(F[k].shape, F[k].ink, 28),
         open: go('paths', '#161616', { pathOpen: k })
       })),
-      picks: picks.map((n) => ({ n, shape: this.shp(F[MI[n].fam].shape, F[MI[n].fam].color, 18), open: () => this.openMove(n, 'explore') })),
+      picks: picks.map((n) => ({ n, shape: this.shp(F[MI[n].fam].shape, F[MI[n].fam].color, 18), open: () => this.openMove(n, 'paths') })),
       monthName: MONTHS[Mo] + ' ' + Y,
       dow: ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((x) => ({ t: x })),
       calCells, dayTitle, dayLine, dayFams, dayMoves,
