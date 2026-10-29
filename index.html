@@ -26,6 +26,9 @@ a{color:#1556C2}a:hover{color:#0E3F92}
 @keyframes peek{0%{opacity:0;transform:translateY(40px)}60%{opacity:1;transform:translateY(-6px)}100%{opacity:1;transform:none}}
 @keyframes tilt{0%,86%,100%{transform:rotate(0)}90%{transform:rotate(-8deg)}95%{transform:rotate(6deg)}}
 @keyframes expand{from{clip-path:circle(0% at 50% 100%)}to{clip-path:circle(150% at 50% 100%)}}
+@keyframes swipeL{from{transform:translateX(100%)}to{transform:none}}
+@keyframes swipeR{from{transform:translateX(-100%)}to{transform:none}}
+.swl{animation:swipeL .65s cubic-bezier(.22,.9,.28,1) both}.swr{animation:swipeR .65s cubic-bezier(.22,.9,.28,1) both}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes wag{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(16deg)}}
 @keyframes stepA{0%,100%{transform:rotate(20deg)}50%{transform:rotate(-20deg)}}
@@ -376,7 +379,7 @@ button{cursor:pointer}
 
 <!-- ============ PATHS ============ -->
 <sc-if value="{{isPaths}}" hint-placeholder-val="{{ false }}">
-<div class="a-screen" style="position: absolute; inset: 0">
+<div class="{{tabClass}}" style="position: absolute; inset: 0">
   <nav aria-label="Main" style="position: absolute; left: 8px; top: 10px; display: flex; gap: 2px; z-index: 5">
     <button onClick="{{navHome}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 26px; height: 13px; border-radius: 13px 13px 0 0; background: #1556C2; margin-top: 9px"></span></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Move</span></button>
     <button onClick="{{navPaths}}" aria-current="page" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #161616"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="22" height="22" fill="#161616"/><rect x="1.5" y="1.5" width="11" height="11" fill="#E5282E"/><rect x="14" y="1.5" width="6.5" height="6" fill="#FFFFFF"/><rect x="14" y="9" width="6.5" height="3.5" fill="#FFC20E"/><rect x="1.5" y="14" width="6" height="6.5" fill="#1556C2"/><rect x="9" y="14" width="11.5" height="6.5" fill="#FFFFFF"/></svg></span><span style="border-bottom: 2px solid #161616; padding-bottom: 1px">Paths</span></button>
@@ -457,7 +460,7 @@ button{cursor:pointer}
 
 <!-- ============ EXPLORE ============ -->
 <sc-if value="{{isExplore}}" hint-placeholder-val="{{ false }}">
-<div class="a-screen" style="position: absolute; inset: 0">
+<div class="{{tabClass}}" style="position: absolute; inset: 0">
   <nav aria-label="Main" style="position: absolute; left: 8px; top: 10px; display: flex; gap: 2px; z-index: 5">
     <button onClick="{{navHome}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 26px; height: 13px; border-radius: 13px 13px 0 0; background: #1556C2; margin-top: 9px"></span></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Move</span></button>
     <button onClick="{{navPaths}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="22" height="22" fill="#161616"/><rect x="1.5" y="1.5" width="11" height="11" fill="#E5282E"/><rect x="14" y="1.5" width="6.5" height="6" fill="#FFFFFF"/><rect x="14" y="9" width="6.5" height="3.5" fill="#FFC20E"/><rect x="1.5" y="14" width="6" height="6.5" fill="#1556C2"/><rect x="9" y="14" width="11.5" height="6.5" fill="#FFFFFF"/></svg></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Paths</span></button>
@@ -494,7 +497,7 @@ button{cursor:pointer}
 
 <!-- ============ YOU ============ -->
 <sc-if value="{{isYou}}" hint-placeholder-val="{{ false }}">
-<div class="a-screen" style="position: absolute; inset: 0">
+<div class="{{tabClass}}" style="position: absolute; inset: 0">
   <nav aria-label="Main" style="position: absolute; left: 8px; top: 10px; display: flex; gap: 2px; z-index: 5">
     <button onClick="{{navHome}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><span style="width: 26px; height: 13px; border-radius: 13px 13px 0 0; background: #1556C2; margin-top: 9px"></span></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Move</span></button>
     <button onClick="{{navPaths}}" style="width: 54px; height: 54px; border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: 800 9px Inter Tight, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #595959"><span style="height: 22px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="22" height="22" fill="#161616"/><rect x="1.5" y="1.5" width="11" height="11" fill="#E5282E"/><rect x="14" y="1.5" width="6.5" height="6" fill="#FFFFFF"/><rect x="14" y="9" width="6.5" height="3.5" fill="#FFC20E"/><rect x="1.5" y="14" width="6" height="6.5" fill="#1556C2"/><rect x="9" y="14" width="11.5" height="6.5" fill="#FFFFFF"/></svg></span><span style="border-bottom: 2px solid transparent; padding-bottom: 1px">Paths</span></button>
@@ -539,7 +542,29 @@ button{cursor:pointer}
 <script src="preact.min.js"></script>
 <script src="runtime.js"></script>
 <script src="app.js"></script>
-<script>document.addEventListener('gesturestart',function(e){e.preventDefault();});document.addEventListener('dblclick',function(e){e.preventDefault();},{passive:false});</script>
+<script>
+(function(){
+var d=document,opt={passive:false};
+['gesturestart','gesturechange','gestureend'].forEach(function(t){d.addEventListener(t,function(e){e.preventDefault();},opt);});
+d.addEventListener('dblclick',function(e){e.preventDefault();},opt);
+var last=0;
+d.addEventListener('touchend',function(e){var n=Date.now();if(n-last<350)e.preventDefault();last=n;},opt);
+d.addEventListener('touchmove',function(e){if(e.touches.length>1||(e.scale&&e.scale!==1))e.preventDefault();},opt);
+d.addEventListener('wheel',function(e){if(e.ctrlKey)e.preventDefault();},opt);
+// swipe between tabs
+var tabs=['checkin','paths','explore','you'],sx=0,sy=0,st=0;
+d.addEventListener('touchstart',function(e){if(e.touches.length!==1)return;sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();},{passive:true});
+d.addEventListener('touchend',function(e){
+  var c=window.__noodle;if(!c||!e.changedTouches.length)return;
+  if(e.target.closest&&e.target.closest('input[type=range]'))return;
+  var dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.5||Date.now()-st>700)return;
+  var i=tabs.indexOf(c.state.screen);if(i<0)return;
+  var j=dx<0?i+1:i-1;if(j<0||j>=tabs.length)return;
+  c.swipeTo(tabs[j],tabs[j]==='paths'?{pathOpen:null}:{});
+},{passive:true});
+})();
+</script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
 </body>
 </html>

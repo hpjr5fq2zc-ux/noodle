@@ -466,6 +466,11 @@ class Component extends DCLogic {
   }
   flat() { return this.plan().reduce((a, b) => a.concat(b.moves), []); }
   per() { const f = this.flat(); return Math.max(20, Math.round(this.state.time * 60 / f.length)); }
+  swipeTo(screen, extra) {
+    const order = ['checkin', 'paths', 'explore', 'you'];
+    const dir = order.indexOf(screen) >= order.indexOf(this.state.screen) ? 'swl' : 'swr';
+    this.setState(Object.assign({ screen, swipe: dir, expanding: false }, extra || {}));
+  }
   transitionTo(screen, color, extra) {
     this.setState({ expanding: true, expandColor: color });
     clearTimeout(this.tt);
@@ -679,10 +684,11 @@ class Component extends DCLogic {
       askFb: s.askFb, hasFbMsg: !!s.fbMsg && !s.askFb, fbMsg: s.fbMsg,
       lastMove: cur.n,
       fbEasy: () => this.feedback('easy'), fbRight: () => this.feedback('right'), fbHard: () => this.feedback('hard'),
-      navHome: go('checkin', '#FFFFFF', { pathOpen: null }),
-      navPaths: go('paths', '#161616', { pathOpen: null }),
-      navExplore: go('explore', '#0B7A3E', { query: '' }),
-      navYou: go('you', '#F6A5A9'),
+      navHome: () => this.swipeTo('checkin', { pathOpen: null }),
+      navPaths: () => this.swipeTo('paths', { pathOpen: null }),
+      navExplore: () => this.swipeTo('explore', { query: '' }),
+      navYou: () => this.swipeTo('you'),
+      tabClass: s.swipe || 'a-screen',
       isPaths: s.screen === 'paths', isMove: s.screen === 'move', isExplore: s.screen === 'explore', isYou: s.screen === 'you',
       pathsSub: s.fb < 3 ? 'Noodle is still learning your level. Tap Easy, Just right or Hard after moves and these fill in on their own.' : 'Your progress paints the picture. Tap a block to see its steps.',
       cells,
@@ -749,7 +755,7 @@ class Component extends DCLogic {
       earL: 'transform-box:fill-box;transform-origin:50% 0;transition:transform .3s cubic-bezier(.3,1.6,.5,1);transform:rotate(' + (s.petting ? 18 : 0) + 'deg)',
       earR: 'transform-box:fill-box;transform-origin:50% 0;transition:transform .3s cubic-bezier(.3,1.6,.5,1);transform:rotate(' + (s.petting ? -18 : 0) + 'deg)',
       heartsBox: 'position:absolute;left:0;top:0;width:96px;height:0;pointer-events:none',
-      checkinClass: 'a-screen' + (s.visited ? ' quick' : ''),
+      checkinClass: (s.swipe && s.screen === 'checkin' ? s.swipe : 'a-screen') + (s.visited ? ' quick' : ''),
       pet: () => this.setState({ pets: s.pets + 1 }),
       petStyle: s.pets ? 'animation:' + (s.pets % 2 ? 'hop' : 'hopB') + ' .7s cubic-bezier(.3,.7,.4,1) both' : '',
       home: () => this.transitionTo('checkin', '#FFFFFF', { idx: 0 }),

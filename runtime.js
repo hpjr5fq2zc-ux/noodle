@@ -77,7 +77,7 @@
     if (!mounted) { mounted = true; if (comp.componentDidMount) comp.componentDidMount(); }
     else if (comp.componentDidUpdate) comp.componentDidUpdate();
   }
-  window.bootNoodle = function (Component) { comp = new Component({}); draw(); };
+  window.bootNoodle = function (Component) { comp = new Component({}); window.__noodle = comp; draw(); };
 
   function fit() {
     var s = Math.min(window.innerWidth / 390, window.innerHeight / 844);
