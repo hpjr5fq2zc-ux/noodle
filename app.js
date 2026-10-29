@@ -907,7 +907,7 @@ class Component extends DCLogic {
       fbEasy: () => { this.setState({ fbKind: 'easy' }); this.feedback('easy'); }, fbRight: () => { this.setState({ fbKind: 'right' }); this.feedback('right'); }, fbHard: () => { this.setState({ fbKind: 'hard' }); this.feedback('hard'); },
       faceEasy: this.face('smirk', 20), faceRight: this.face('smile', 20), faceHard: this.face('oof', 20),
       fbFace: this.face(s.fbKind === 'easy' ? 'smirk' : s.fbKind === 'hard' ? 'oof' : 'grin', 26),
-      youFace: this.face(s.screen === 'you' ? 'smile' : 'smile-left', 24),
+      youFace: this.face('grin', 24),
       navHome: () => this.swipeTo('checkin', { pathOpen: null }),
       navPaths: () => this.swipeTo('paths', { pathOpen: null, query: '' }),
       navExplore: () => this.swipeTo('explore', { query: '' }),
